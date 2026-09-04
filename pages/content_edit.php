@@ -278,10 +278,13 @@ if (!empty($row['content'])) {
                                            placeholder="Electric, Future, EV">
                                 </div>
 
+                                <?php
+                                $isSitemap = isset($row['is_sitemap']) ? intval($row['is_sitemap']) : 1;
+                                ?>
                                 <div class="mb-3">
                                     <div class="form-check form-switch pt-2">
-                                        <input class="form-check-input" type="checkbox" name="sitemap_needed" value="1" id="sitemap_needed" checked style="cursor: pointer; width: 2.2em; height: 1.2em;">
-                                        <label class="form-check-label fw-semibold text-dark ms-2" for="sitemap_needed" style="cursor: pointer;">
+                                        <input class="form-check-input" type="checkbox" name="is_sitemap" value="1" id="is_sitemap" <?= $isSitemap == 1 ? 'checked' : '' ?> style="cursor: pointer; width: 2.2em; height: 1.2em;">
+                                        <label class="form-check-label fw-semibold text-dark ms-2" for="is_sitemap" style="cursor: pointer;">
                                             <i class="fa fa-sitemap text-primary me-1"></i> Add this blog to sitemap (sitemap-blog.xml)
                                         </label>
                                     </div>

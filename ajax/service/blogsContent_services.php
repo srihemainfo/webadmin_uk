@@ -238,6 +238,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $labelJson = !empty($labelData) ? json_encode($labelData, JSON_UNESCAPED_UNICODE) : null;
 
     if ($action === 'create_blog' && $method === 'blogs_content') {
+        $is_sitemap = isset($_POST['is_sitemap']) && ($_POST['is_sitemap'] == '1' || $_POST['is_sitemap'] === 'on') ? 1 : 0;
+
         $checkQuery = "SELECT id FROM blogs_content WHERE slug = '$slug'";
        
         $checkResult = $con->query($checkQuery);
@@ -255,6 +257,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $con->prepare("
                 INSERT INTO blogs_content (
                     category_id,
+                    is_sitemap,
                     published_date,
                     blog_title,
                     sub_title,
@@ -268,12 +271,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     meta_keywords,
                     description,
                     faq
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
             
             $stmt->bind_param(
-                "issssissssssss",
+                "iissssissssssss",
                 $category_id,
+                $is_sitemap,
                 $published_date,
                 $blog_title,
                 $sub_title,
@@ -290,8 +294,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             );
 
             if ($stmt->execute()) {
-                $sitemap_needed = isset($_POST['sitemap_needed']) && ($_POST['sitemap_needed'] == '1' || $_POST['sitemap_needed'] === 'on') ? 1 : 0;
-
                 $catUrl = '';
                 if (!empty($category_id)) {
                     $catQ = mysqli_query($con, "SELECT cat_url FROM categories WHERE id = " . intval($category_id));
@@ -304,7 +306,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $sitemapService = new SitemapService();
 
                 try {
-                    if ($sitemap_needed == 1) {
+                    if ($is_sitemap == 1) {
                         $sitemapService->addBlog($slug, $catUrl, date('Y-m-d'));
                     } else {
                         $sitemapService->removeBlog($slug, $catUrl);

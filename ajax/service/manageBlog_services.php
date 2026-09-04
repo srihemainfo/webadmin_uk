@@ -42,6 +42,7 @@ if ($method === 'create_index') {
             'content_cat' AS row_type,
             bl.id,
             bl.category_id,
+            bl.is_sitemap,
             bl.blog_title,
             bl.slug,
             bl.published_date,
@@ -199,11 +200,13 @@ else if ($method === 'update_status') {
     ];
 
     if ($result_data && mysqli_affected_rows($con) > 0) {
-        if ($status == 0) {
-            $bQuery = mysqli_query($con, "SELECT b.slug, c.cat_url FROM blogs_content b LEFT JOIN categories c ON c.id = b.category_id WHERE b.id = '$category_id'");
-            if ($bQuery && $bRow = mysqli_fetch_assoc($bQuery)) {
-                require_once __DIR__ . '/sitemapservice.php';
-                $sitemapService = new SitemapService();
+        $bQuery = mysqli_query($con, "SELECT b.slug, b.is_sitemap, c.cat_url FROM blogs_content b LEFT JOIN categories c ON c.id = b.category_id WHERE b.id = '$category_id'");
+        if ($bQuery && $bRow = mysqli_fetch_assoc($bQuery)) {
+            require_once __DIR__ . '/sitemapservice.php';
+            $sitemapService = new SitemapService();
+            if ($status == 1 && intval($bRow['is_sitemap'] ?? 1) == 1) {
+                $sitemapService->addBlog($bRow['slug'], $bRow['cat_url'], date('Y-m-d'));
+            } else {
                 $sitemapService->removeBlog($bRow['slug'], $bRow['cat_url']);
             }
         }
@@ -520,6 +523,8 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $labelData = [];
 
     if ($action === 'edit_blog' && $method === 'edit_content') {
+        $is_sitemap = isset($_POST['is_sitemap']) && ($_POST['is_sitemap'] == '1' || $_POST['is_sitemap'] === 'on') ? 1 : 0;
+
         $oldSlug = '';
         $oldCatUrl = '';
         $oldQuery = mysqli_query($con, "SELECT b.slug, c.cat_url FROM blogs_content b LEFT JOIN categories c ON c.id = b.category_id WHERE b.id = '$blog_id'");
@@ -532,6 +537,7 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $updateQuery = "
         UPDATE blogs_content SET
             category_id      = ?,
+            is_sitemap       = ?,
             published_date   = ?,
             sub_title        = ?,
             blog_title       = ?,
@@ -553,10 +559,11 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($stmt) {
         // 3. Bind the parameters 
-        // "ssssssssssssssi" means 14 strings and 1 integer (the blog_id).
+        // "iisssssssssssssi" means 2 integers (category_id, is_sitemap), 13 strings, and 1 integer (blog_id).
         $stmt->bind_param(
-            "ssssssssssssssi",
+            "iisssssssssssssi",
             $category_id,
+            $is_sitemap,
             $published_date,
             $sub_title,
             $blog_title,
@@ -575,8 +582,6 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // 4. Execute the query
         if ($stmt->execute()) {
-            $sitemap_needed = isset($_POST['sitemap_needed']) && ($_POST['sitemap_needed'] == '1' || $_POST['sitemap_needed'] === 'on') ? 1 : 0;
-
             $catUrl = '';
             if (!empty($category_id)) {
                 $catQ = mysqli_query($con, "SELECT cat_url FROM categories WHERE id = " . intval($category_id));
@@ -589,7 +594,7 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $sitemapService = new SitemapService();
 
             try {
-                if ($sitemap_needed == 1) {
+                if ($is_sitemap == 1) {
                     if (!empty($oldSlug) && $oldSlug !== $slug) {
                         $sitemapService->removeBlog($oldSlug, $oldCatUrl);
                     }
