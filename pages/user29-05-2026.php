@@ -1,0 +1,3249 @@
+<?php
+$DIR = dirname(__DIR__);
+set_include_path($DIR);
+require_once "xlsx/Classes/PHPExcel.php";
+if (isset($_POST['down_form']) && $_POST['method'] == 'download_all_user') {
+    $objPHPExcel = new PHPExcel();
+    $objPHPExcel->setActiveSheetIndex(0);
+    $filename = 'User List.xlsx';
+    $user_register = select_query($con, "user_register", "`id`, `name`, `t_point`, `mobile`, `passport`, `email`, `created_at`", "`deletes` = '0' AND `roll_id` = '0'", "", "");
+    if ($user_register['nr'] > 0) {
+        $objPHPExcel->getActiveSheet()->setCellValue('A1', 'CUSTOMER ID');
+        $objPHPExcel->getActiveSheet()->setCellValue('B1', 'NAME');
+        $objPHPExcel->getActiveSheet()->setCellValue('C1', 'POINTS');
+        $objPHPExcel->getActiveSheet()->setCellValue('D1', 'PHONE NO');
+        $objPHPExcel->getActiveSheet()->setCellValue('E1', 'EMIRATE / PASSPORT ID');
+        $objPHPExcel->getActiveSheet()->setCellValue('F1', 'E-MAIL');
+        $objPHPExcel->getActiveSheet()->setCellValue('G1', 'CREATED ON');
+        $col = 2;
+        foreach ($user_register['result'] as $key => $value) {
+            $objPHPExcel->getActiveSheet()->setCellValue('A' . $col, $value['id']);
+            $objPHPExcel->getActiveSheet()->setCellValue('B' . $col, $value['name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C' . $col, $value['t_point']);
+            $objPHPExcel->getActiveSheet()->setCellValue('D' . $col, $value['mobile']);
+            $objPHPExcel->getActiveSheet()->setCellValue('E' . $col, $value['passport']);
+            $objPHPExcel->getActiveSheet()->setCellValue('F' . $col, $value['email']);
+            $objPHPExcel->getActiveSheet()->setCellValue('G' . $col, date("d-M-Y g:i a", strtotime($value['created_at'])));
+            $col++;
+        }
+    }
+    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+    $loc = $DIR . '/xlsx/upload/generate/';
+    // var_dump($loc);die;
+    $objWriter->save($loc . $filename);
+    $xslurl = $adminurl . 'xlsx/upload/generate/' . $filename;
+    $cron_testarr = array("reason" => $xslurl, "filename" => 'agent.php', "draw_id" => '0', "creadedon" => $dubaidate_time);
+    $cron_test = insert($con, "cron_test", "", $cron_testarr, "", "", "");
+    divert($xslurl);
+} else if (isset($_POST['down_form971']) && $_POST['method'] == 'download_all_user971') {
+    $objPHPExcel = new PHPExcel();
+    $objPHPExcel->setActiveSheetIndex(0);
+    $filename = 'All UAE Customers List.xlsx';
+    $user_register = select_query($con, "user_register", "`id`, `name`, `t_point`, `mobile`, `passport`, `email`, `created_at`", "`deletes` = '0' AND `roll_id` = '0' AND mobile LIKE '971%' AND LENGTH(mobile) =12 AND mobile NOT LIKE '9710%'", "", "");
+    if ($user_register['nr'] > 0) {
+        $objPHPExcel->getActiveSheet()->setCellValue('A1', 'CUSTOMER ID');
+        $objPHPExcel->getActiveSheet()->setCellValue('B1', 'NAME');
+        $objPHPExcel->getActiveSheet()->setCellValue('C1', 'POINTS');
+        $objPHPExcel->getActiveSheet()->setCellValue('D1', 'PHONE NO');
+        $objPHPExcel->getActiveSheet()->setCellValue('E1', 'EMIRATE / PASSPORT ID');
+        $objPHPExcel->getActiveSheet()->setCellValue('F1', 'E-MAIL');
+        $objPHPExcel->getActiveSheet()->setCellValue('G1', 'CREATED ON');
+        $col = 2;
+        foreach ($user_register['result'] as $key => $value) {
+            $objPHPExcel->getActiveSheet()->setCellValue('A' . $col, $value['id']);
+            $objPHPExcel->getActiveSheet()->setCellValue('B' . $col, $value['name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C' . $col, $value['t_point']);
+            $objPHPExcel->getActiveSheet()->setCellValue('D' . $col, $value['mobile']);
+            $objPHPExcel->getActiveSheet()->setCellValue('E' . $col, $value['passport']);
+            $objPHPExcel->getActiveSheet()->setCellValue('F' . $col, $value['email']);
+            $objPHPExcel->getActiveSheet()->setCellValue('G' . $col, date("d-M-Y g:i a", strtotime($value['created_at'])));
+            $col++;
+        }
+    }
+    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+    $loc = $DIR . '/xlsx/upload/generate/';
+    // var_dump($loc);die;
+    $objWriter->save($loc . $filename);
+    $xslurl = $adminurl . 'xlsx/upload/generate/' . $filename;
+    $cron_testarr = array("reason" => $xslurl, "filename" => 'agent.php', "draw_id" => '0', "creadedon" => $dubaidate_time);
+    $cron_test = insert($con, "cron_test", "", $cron_testarr, "", "", "");
+    divert($xslurl);
+} else if (isset($_POST['down_formnon']) && $_POST['method'] == 'download_all_usernon') {
+    $objPHPExcel = new PHPExcel();
+    $objPHPExcel->setActiveSheetIndex(0);
+    $filename = 'All Non UAE Customers List.xlsx';
+    $user_register = select_query($con, "user_register", "`id`, `name`, `t_point`, `mobile`, `passport`, `email`, `created_at`", "`deletes` = '0' AND `roll_id` = '0' AND mobile NOT LIKE '971%' AND LENGTH(mobile) =12 AND mobile NOT LIKE '9710%'", "", "");
+    if ($user_register['nr'] > 0) {
+        $objPHPExcel->getActiveSheet()->setCellValue('A1', 'CUSTOMER ID');
+        $objPHPExcel->getActiveSheet()->setCellValue('B1', 'NAME');
+        $objPHPExcel->getActiveSheet()->setCellValue('C1', 'POINTS');
+        $objPHPExcel->getActiveSheet()->setCellValue('D1', 'PHONE NO');
+        $objPHPExcel->getActiveSheet()->setCellValue('E1', 'EMIRATE / PASSPORT ID');
+        $objPHPExcel->getActiveSheet()->setCellValue('F1', 'E-MAIL');
+        $objPHPExcel->getActiveSheet()->setCellValue('G1', 'CREATED ON');
+        $col = 2;
+        foreach ($user_register['result'] as $key => $value) {
+            $objPHPExcel->getActiveSheet()->setCellValue('A' . $col, $value['id']);
+            $objPHPExcel->getActiveSheet()->setCellValue('B' . $col, $value['name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C' . $col, $value['t_point']);
+            $objPHPExcel->getActiveSheet()->setCellValue('D' . $col, $value['mobile']);
+            $objPHPExcel->getActiveSheet()->setCellValue('E' . $col, $value['passport']);
+            $objPHPExcel->getActiveSheet()->setCellValue('F' . $col, $value['email']);
+            $objPHPExcel->getActiveSheet()->setCellValue('G' . $col, date("d-M-Y g:i a", strtotime($value['created_at'])));
+            $col++;
+        }
+    }
+    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+    $loc = $DIR . '/xlsx/upload/generate/';
+    // var_dump($loc);die;
+    $objWriter->save($loc . $filename);
+    $xslurl = $adminurl . 'xlsx/upload/generate/' . $filename;
+    $cron_testarr = array("reason" => $xslurl, "filename" => 'agent.php', "draw_id" => '0', "creadedon" => $dubaidate_time);
+    $cron_test = insert($con, "cron_test", "", $cron_testarr, "", "", "");
+    divert($xslurl);
+} else if (isset($_POST['down_form971non']) && $_POST['method'] == 'download_all_user971non') {
+    $objPHPExcel = new PHPExcel();
+    $objPHPExcel->setActiveSheetIndex(0);
+    $filename = 'All Non Participate UAE Customers List .xlsx';
+    $draw = select_query($con, "draw", "", " (`deletes` = 0 AND `status` = 'Active' AND `id` IN ( SELECT `id` FROM ( SELECT `id` FROM `draw` WHERE `deletes` = 0 AND `status` = 'Active' ORDER BY `id` ASC LIMIT 1 ) t )) ORDER BY `id` DESC;", "", "");
+    $drawid_curr = $draw['result'][0]['id'];
+    $user_register = mysqli_query($con, "SELECT * from user_register WHERE id NOT IN (SELECT user_id FROM ticket_lines WHERE draw_id = $drawid_curr  GROUP BY user_id) AND deletes= '0' AND roll_id='0' AND mobile LIKE '971%' AND LENGTH(mobile) =12 AND mobile NOT LIKE '9710%' AND lastlogin BETWEEN (NOW() - INTERVAL 6 MONTH) AND NOW()");
+    // echo "user_register == ".mysqli_num_rows($user_register);
+    // if ($user_register['nr'] > 0) {
+    if (mysqli_num_rows($user_register) > 0) {
+        $objPHPExcel->getActiveSheet()->setCellValue('A1', 'CUSTOMER ID');
+        $objPHPExcel->getActiveSheet()->setCellValue('B1', 'NAME');
+        $objPHPExcel->getActiveSheet()->setCellValue('C1', 'POINTS');
+        $objPHPExcel->getActiveSheet()->setCellValue('D1', 'PHONE NO');
+        $objPHPExcel->getActiveSheet()->setCellValue('E1', 'EMIRATE / PASSPORT ID');
+        $objPHPExcel->getActiveSheet()->setCellValue('F1', 'E-MAIL');
+        $objPHPExcel->getActiveSheet()->setCellValue('G1', 'CREATED ON');
+        $col = 2;
+        // foreach ($user_register['result'] as $key => $value) {
+        while ($value = mysqli_fetch_assoc($user_register)) {
+            $objPHPExcel->getActiveSheet()->setCellValue('A' . $col, $value['id']);
+            $objPHPExcel->getActiveSheet()->setCellValue('B' . $col, $value['name']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C' . $col, $value['t_point']);
+            $objPHPExcel->getActiveSheet()->setCellValue('D' . $col, $value['mobile']);
+            $objPHPExcel->getActiveSheet()->setCellValue('E' . $col, $value['passport']);
+            $objPHPExcel->getActiveSheet()->setCellValue('F' . $col, $value['email']);
+            $objPHPExcel->getActiveSheet()->setCellValue('G' . $col, date("d-M-Y g:i a", strtotime($value['created_at'])));
+            $col++;
+        }
+    }
+    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+    $loc = $DIR . '/xlsx/upload/generate/';
+    $objWriter->save($loc . $filename);
+    $xslurl = $adminurl . 'xlsx/upload/generate/' . $filename;
+    $cron_testarr = array("reason" => $xslurl, "filename" => 'agent.php', "draw_id" => '0', "creadedon" => $dubaidate_time);
+    $cron_test = insert($con, "cron_test", "", $cron_testarr, "", "", "");
+    divert($xslurl);
+}
+$agent_ID_N = $_SESSION['memid'];
+$sql = "SELECT * FROM `user_register` WHERE `id` = '$agent_ID_N'";
+$run = mysqli_query($con, $sql);
+if (mysqli_num_rows($run) > 0) {
+    $row = $run->fetch_assoc();
+}
+$tabID = $subid2;
+$title = 'Customers';
+$idname = 'Customer ID';
+$addName = 'Users';
+
+// Fetch distinct states for the filter
+$state_filter_query = mysqli_query($con, "SELECT DISTINCT current_state FROM customer_register WHERE current_state IS NOT NULL AND current_state != '' ORDER BY current_state ASC");
+
+// Fetch distinct districts for the filter
+$district_filter_query = mysqli_query($con, "SELECT DISTINCT current_district FROM customer_register WHERE current_district IS NOT NULL AND current_district != '' ORDER BY current_district ASC");
+?>
+<head>
+    <style>
+        .intl-tel-input .country-list {
+            position: absolute;
+            z-index: 999 !important;
+        }
+        img.swal2-image,
+        textarea {
+            width: 100%
+        }
+        .intl-tel-input.allow-dropdown .flag-container:hover,
+        .intl-tel-input.iti-container:hover,
+        button:hover {
+            cursor: pointer
+        }
+        .bootstrap-select .dropdown-toggle .filter-option {
+            height: auto
+        }
+        .bootstrap-select>.dropdown-toggle {
+            background: #fff
+        }
+        .bootstrap-select .dropdown-menu li a,
+        .bootstrap-select .dropdown-menu li a.active, /* specifically targeting the link */
+.dropdown-item.active {
+    padding: 3px 0 24px 22px !important;
+    font-weight: 700 !important; /* Makes the text bold */
+    font-size: 15px !important; /* Slightly increases the size (adjust as needed) */
+    background-color: #f8f9fa !important; /* Optional: adds a subtle background highlight */
+}
+        .bootstrap-select {
+            width: 100% !important;
+        }
+        .bootstrap-select .dropdown-toggle {
+            height: 38px;
+            padding: 6px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            background: #fff;
+        }
+        .inner.show {
+            min-height: 135px !important;
+            max-height: 134px !important
+        }
+        .wrap-modal-slider {
+            padding: 0 30px;
+            opacity: 0;
+            transition: .3s
+        }
+        .wrap-modal-slider.open {
+            opacity: 1
+        }
+        .slick-next:before,
+        .slick-prev:before {
+            color: red
+        }
+        .modal-body1 {
+            padding: 30px !important;
+            text-align: center;
+            background: radial-gradient(circle, rgb(3 111 190) 0, rgb(13 65 114) 100%)
+        }
+        .modal-body1 p {
+            line-height: 23px;
+            padding-top: 12px;
+            font-size: 15px;
+            color: #fff
+        }
+        .modal-body1 h3 {
+            color: #fff
+        }
+        .modal-headers {
+            background-image: -webkit-linear-gradient(137deg, #e9cc02 0, #ffee0c 100%);
+            border-radius: inherit;
+            border-bottom: 1px solid #036bb7;
+            display: flex;
+            -ms-flex-align: start;
+            align-items: flex-start;
+            -ms-flex-pack: justify;
+            justify-content: space-between;
+            padding: 12px
+        }
+        button.close,
+        h5.modal-title {
+            color: #141414
+        }
+        .swal-wide {
+            background: 0 0 !important;
+            width: 1000px !important
+        }
+        .hide,
+        .intl-tel-input .hide,
+        .swal2-select {
+            display: none
+        }
+        .intl-tel-input,
+        pre {
+            display: inline-block
+        }
+        .swal2-close:focus {
+            outline: 0;
+            box-shadow: none !important
+        }
+        .swal2-close {
+            margin: 18px -11px -161px 0 !important
+        }
+        textarea {
+            height: 150px;
+            padding: 12px 20px;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+            font-size: 16px;
+            resize: none
+        }
+        .intl-tel-input {
+            position: relative
+        }
+        *,
+        .intl-tel-input * {
+            box-sizing: border-box;
+            -moz-box-sizing: border-box
+        }
+        .intl-tel-input .v-hide {
+            visibility: hidden
+        }
+        .intl-tel-input input,
+        .intl-tel-input input[type=tel],
+        .intl-tel-input input[type=text] {
+            position: relative;
+            z-index: 0;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            padding-right: 36px;
+            margin-right: 0
+        }
+        .intl-tel-input .flag-container {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            padding: 1px
+        }
+        .intl-tel-input .selected-flag {
+            z-index: 1;
+            position: relative;
+            width: 36px;
+            height: 100%;
+            padding: 0 0 0 8px
+        }
+        .intl-tel-input .selected-flag .iti-flag {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            margin: auto
+        }
+        .intl-tel-input .selected-flag .iti-arrow {
+            position: absolute;
+            top: 50%;
+            margin-top: -2px;
+            right: 6px;
+            width: 0;
+            height: 0;
+            border-left: 3px solid transparent;
+            border-right: 3px solid transparent;
+            border-top: 4px solid #555
+        }
+        .intl-tel-input .selected-flag .iti-arrow.up {
+            border-top: none;
+            border-bottom: 4px solid #555
+        }
+        .intl-tel-input input#phone {
+            width: 100%;
+            height: 44px;
+            border-radius: 5px;
+            border: 1px solid #ecf0fa
+        }
+        .intl-tel-input .country-list {
+            position: absolute;
+            z-index: 2;
+            list-style: none;
+            text-align: left;
+            padding: 0;
+            margin: 0 0 0 -1px;
+            box-shadow: 1px 1px 4px rgba(0, 0, 0, .2);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            white-space: nowrap;
+            max-height: 200px;
+            overflow-y: scroll
+        }
+        .intl-tel-input.allow-dropdown input[disabled]+.flag-container:hover .selected-flag,
+        .intl-tel-input.allow-dropdown input[readonly]+.flag-container:hover .selected-flag,
+        .iti-flag.np {
+            background-color: transparent
+        }
+        .intl-tel-input .country-list.dropup {
+            bottom: 100%;
+            margin-bottom: -1px
+        }
+        .intl-tel-input .country-list .flag-box {
+            display: inline-block;
+            width: 20px
+        }
+        @media (max-width:500px) {
+            .intl-tel-input .country-list {
+                white-space: normal
+            }
+        }
+        .intl-tel-input .country-list .divider {
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #ccc
+        }
+        .intl-tel-input .country-list .country {
+            padding: 5px 10px
+        }
+        .intl-tel-input .country-list .country .dial-code {
+            color: #999
+        }
+        .intl-tel-input .country-list .country.highlight,
+        .intl-tel-input.allow-dropdown .flag-container:hover .selected-flag {
+            background-color: rgba(0, 0, 0, .05)
+        }
+        .intl-tel-input .country-list .country-name,
+        .intl-tel-input .country-list .dial-code,
+        .intl-tel-input .country-list .flag-box {
+            vertical-align: middle
+        }
+        .intl-tel-input .country-list .country-name,
+        .intl-tel-input .country-list .flag-box {
+            margin-right: 6px
+        }
+        .intl-tel-input.allow-dropdown input,
+        .intl-tel-input.allow-dropdown input[type=tel],
+        .intl-tel-input.allow-dropdown input[type=text],
+        .intl-tel-input.separate-dial-code input,
+        .intl-tel-input.separate-dial-code input[type=tel],
+        .intl-tel-input.separate-dial-code input[type=text] {
+            padding-right: 6px;
+            padding-left: 52px;
+            margin-left: 0
+        }
+        .intl-tel-input.allow-dropdown .flag-container,
+        .intl-tel-input.separate-dial-code .flag-container {
+            right: auto;
+            left: 0
+        }
+        .intl-tel-input.allow-dropdown .selected-flag,
+        .intl-tel-input.separate-dial-code .selected-flag {
+            width: 46px
+        }
+        .intl-tel-input.allow-dropdown input[disabled]+.flag-container:hover,
+        .intl-tel-input.allow-dropdown input[readonly]+.flag-container:hover {
+            cursor: default
+        }
+        .intl-tel-input.separate-dial-code .selected-flag {
+            background-color: rgba(0, 0, 0, .05);
+            display: table
+        }
+        .intl-tel-input.separate-dial-code .selected-dial-code {
+            display: table-cell;
+            vertical-align: middle;
+            padding-left: 28px
+        }
+        .intl-tel-input.separate-dial-code.iti-sdc-2 input,
+        .intl-tel-input.separate-dial-code.iti-sdc-2 input[type=tel],
+        .intl-tel-input.separate-dial-code.iti-sdc-2 input[type=text] {
+            padding-left: 66px
+        }
+        .intl-tel-input.separate-dial-code.iti-sdc-2 .selected-flag {
+            width: 60px
+        }
+        .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-2 input,
+        .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-2 input[type=tel],
+        .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-2 input[type=text] {
+            padding-left: 76px
+        }
+        .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-2 .selected-flag {
+            width: 70px
+        }
+        .intl-tel-input.separate-dial-code.iti-sdc-3 input,
+        .intl-tel-input.separate-dial-code.iti-sdc-3 input[type=tel],
+        .intl-tel-input.separate-dial-code.iti-sdc-3 input[type=text] {
+            padding-left: 74px
+        }
+        .intl-tel-input.separate-dial-code.iti-sdc-3 .selected-flag {
+            width: 68px
+        }
+        .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-3 input,
+        .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-3 input[type=tel],
+        .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-3 input[type=text] {
+            padding-left: 84px
+        }
+        .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-3 .selected-flag {
+            width: 78px
+        }
+        .intl-tel-input.separate-dial-code.iti-sdc-4 input,
+        .intl-tel-input.separate-dial-code.iti-sdc-4 input[type=tel],
+        .intl-tel-input.separate-dial-code.iti-sdc-4 input[type=text] {
+            padding-left: 82px
+        }
+        .intl-tel-input.separate-dial-code.iti-sdc-4 .selected-flag {
+            width: 76px
+        }
+        .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-4 input,
+        .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-4 input[type=tel],
+        .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-4 input[type=text] {
+            padding-left: 92px
+        }
+        .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-4 .selected-flag {
+            width: 86px
+        }
+        .intl-tel-input.separate-dial-code.iti-sdc-5 input,
+        .intl-tel-input.separate-dial-code.iti-sdc-5 input[type=tel],
+        .intl-tel-input.separate-dial-code.iti-sdc-5 input[type=text] {
+            padding-left: 90px
+        }
+        .intl-tel-input.separate-dial-code.iti-sdc-5 .selected-flag {
+            width: 84px
+        }
+        .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-5 input,
+        .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-5 input[type=tel],
+        .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-5 input[type=text] {
+            padding-left: 100px
+        }
+        .intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-5 .selected-flag {
+            width: 94px
+        }
+        .intl-tel-input.iti-container {
+            position: absolute;
+            top: -1000px;
+            left: -1000px;
+            z-index: 1060;
+            padding: 1px
+        }
+        .iti-mobile .intl-tel-input.iti-container {
+            top: 30px;
+            bottom: 30px;
+            left: 30px;
+            right: 30px;
+            position: fixed
+        }
+        .iti-mobile .intl-tel-input .country-list {
+            max-height: 100%;
+            width: 100%
+        }
+        .iti-mobile .intl-tel-input .country-list .country {
+            padding: 10px;
+            line-height: 1.5em
+        }
+        .iti-flag.be,
+        .iti-flag.ne {
+            width: 18px
+        }
+        .iti-flag.ch {
+            width: 15px
+        }
+        .iti-flag.mc {
+            width: 19px
+        }
+        .iti-flag.ac {
+            height: 10px;
+            background-position: 0 0
+        }
+        .iti-flag.ad {
+            height: 14px;
+            background-position: -22px 0
+        }
+        .iti-flag.ae {
+            height: 10px;
+            background-position: -44px 0
+        }
+        .iti-flag.af {
+            height: 14px;
+            background-position: -66px 0
+        }
+        .iti-flag.ag {
+            height: 14px;
+            background-position: -88px 0
+        }
+        .iti-flag.ai {
+            height: 10px;
+            background-position: -110px 0
+        }
+        .iti-flag.al {
+            height: 15px;
+            background-position: -132px 0
+        }
+        .iti-flag.am {
+            height: 10px;
+            background-position: -154px 0
+        }
+        .iti-flag.ao {
+            height: 14px;
+            background-position: -176px 0
+        }
+        .iti-flag.aq {
+            height: 14px;
+            background-position: -198px 0
+        }
+        .iti-flag.ar {
+            height: 13px;
+            background-position: -220px 0
+        }
+        .iti-flag.as {
+            height: 10px;
+            background-position: -242px 0
+        }
+        .iti-flag.at {
+            height: 14px;
+            background-position: -264px 0
+        }
+        .iti-flag.au {
+            height: 10px;
+            background-position: -286px 0
+        }
+        .iti-flag.aw {
+            height: 14px;
+            background-position: -308px 0
+        }
+        .iti-flag.ax {
+            height: 13px;
+            background-position: -330px 0
+        }
+        .iti-flag.az {
+            height: 10px;
+            background-position: -352px 0
+        }
+        .iti-flag.ba {
+            height: 10px;
+            background-position: -374px 0
+        }
+        .iti-flag.bb {
+            height: 14px;
+            background-position: -396px 0
+        }
+        .iti-flag.bd {
+            height: 12px;
+            background-position: -418px 0
+        }
+        .iti-flag.be {
+            height: 15px;
+            background-position: -440px 0
+        }
+        .iti-flag.bf {
+            height: 14px;
+            background-position: -460px 0
+        }
+        .iti-flag.bg {
+            height: 12px;
+            background-position: -482px 0
+        }
+        .iti-flag.bh {
+            height: 12px;
+            background-position: -504px 0
+        }
+        .iti-flag.bi {
+            height: 12px;
+            background-position: -526px 0
+        }
+        .iti-flag.bj {
+            height: 14px;
+            background-position: -548px 0
+        }
+        .iti-flag.bl {
+            height: 14px;
+            background-position: -570px 0
+        }
+        .iti-flag.bm {
+            height: 10px;
+            background-position: -592px 0
+        }
+        .iti-flag.bn {
+            height: 10px;
+            background-position: -614px 0
+        }
+        .iti-flag.bo {
+            height: 14px;
+            background-position: -636px 0
+        }
+        .iti-flag.bq {
+            height: 14px;
+            background-position: -658px 0
+        }
+        .iti-flag.br {
+            height: 14px;
+            background-position: -680px 0
+        }
+        .iti-flag.bs {
+            height: 10px;
+            background-position: -702px 0
+        }
+        .iti-flag.bt {
+            height: 14px;
+            background-position: -724px 0
+        }
+        .iti-flag.bv {
+            height: 15px;
+            background-position: -746px 0
+        }
+        .iti-flag.bw {
+            height: 14px;
+            background-position: -768px 0
+        }
+        .iti-flag.by {
+            height: 10px;
+            background-position: -790px 0
+        }
+        .iti-flag.bz {
+            height: 14px;
+            background-position: -812px 0
+        }
+        .iti-flag.ca {
+            height: 10px;
+            background-position: -834px 0
+        }
+        .iti-flag.cc {
+            height: 10px;
+            background-position: -856px 0
+        }
+        .iti-flag.cd {
+            height: 15px;
+            background-position: -878px 0
+        }
+        .iti-flag.cf {
+            height: 14px;
+            background-position: -900px 0
+        }
+        .iti-flag.cg {
+            height: 14px;
+            background-position: -922px 0
+        }
+        .iti-flag.ch {
+            height: 15px;
+            background-position: -944px 0
+        }
+        .iti-flag.ci {
+            height: 14px;
+            background-position: -961px 0
+        }
+        .iti-flag.ck {
+            height: 10px;
+            background-position: -983px 0
+        }
+        .iti-flag.cl {
+            height: 14px;
+            background-position: -1005px 0
+        }
+        .iti-flag.cm {
+            height: 14px;
+            background-position: -1027px 0
+        }
+        .iti-flag.cn {
+            height: 14px;
+            background-position: -1049px 0
+        }
+        .iti-flag.co {
+            height: 14px;
+            background-position: -1071px 0
+        }
+        .iti-flag.cp {
+            height: 14px;
+            background-position: -1093px 0
+        }
+        .iti-flag.cr {
+            height: 12px;
+            background-position: -1115px 0
+        }
+        .iti-flag.cu {
+            height: 10px;
+            background-position: -1137px 0
+        }
+        .iti-flag.cv {
+            height: 12px;
+            background-position: -1159px 0
+        }
+        .iti-flag.cw {
+            height: 14px;
+            background-position: -1181px 0
+        }
+        .iti-flag.cx {
+            height: 10px;
+            background-position: -1203px 0
+        }
+        .iti-flag.cy {
+            height: 13px;
+            background-position: -1225px 0
+        }
+        .iti-flag.cz {
+            height: 14px;
+            background-position: -1247px 0
+        }
+        .iti-flag.de {
+            height: 12px;
+            background-position: -1269px 0
+        }
+        .iti-flag.dg {
+            height: 10px;
+            background-position: -1291px 0
+        }
+        .iti-flag.dj {
+            height: 14px;
+            background-position: -1313px 0
+        }
+        .iti-flag.dk {
+            height: 15px;
+            background-position: -1335px 0
+        }
+        .iti-flag.dm {
+            height: 10px;
+            background-position: -1357px 0
+        }
+        .iti-flag.do {
+            height: 13px;
+            background-position: -1379px 0
+        }
+        .iti-flag.dz {
+            height: 14px;
+            background-position: -1401px 0
+        }
+        .iti-flag.ea {
+            height: 14px;
+            background-position: -1423px 0
+        }
+        .iti-flag.ec {
+            height: 14px;
+            background-position: -1445px 0
+        }
+        .iti-flag.ee {
+            height: 13px;
+            background-position: -1467px 0
+        }
+        .iti-flag.eg {
+            height: 14px;
+            background-position: -1489px 0
+        }
+        .iti-flag.eh {
+            height: 10px;
+            background-position: -1511px 0
+        }
+        .iti-flag.er {
+            height: 10px;
+            background-position: -1533px 0
+        }
+        .iti-flag.es {
+            height: 14px;
+            background-position: -1555px 0
+        }
+        .iti-flag.et {
+            height: 10px;
+            background-position: -1577px 0
+        }
+        .iti-flag.eu {
+            height: 14px;
+            background-position: -1599px 0
+        }
+        .iti-flag.fi {
+            height: 12px;
+            background-position: -1621px 0
+        }
+        .iti-flag.fj {
+            height: 10px;
+            background-position: -1643px 0
+        }
+        .iti-flag.fk {
+            height: 10px;
+            background-position: -1665px 0
+        }
+        .iti-flag.fm {
+            height: 11px;
+            background-position: -1687px 0
+        }
+        .iti-flag.fo {
+            height: 15px;
+            background-position: -1709px 0
+        }
+        .iti-flag.fr {
+            height: 14px;
+            background-position: -1731px 0
+        }
+        .iti-flag.ga {
+            height: 15px;
+            background-position: -1753px 0
+        }
+        .iti-flag.gb {
+            height: 10px;
+            background-position: -1775px 0
+        }
+        .iti-flag.gd {
+            height: 12px;
+            background-position: -1797px 0
+        }
+        .iti-flag.ge {
+            height: 14px;
+            background-position: -1819px 0
+        }
+        .iti-flag.gf {
+            height: 14px;
+            background-position: -1841px 0
+        }
+        .iti-flag.gg {
+            height: 14px;
+            background-position: -1863px 0
+        }
+        .iti-flag.gh {
+            height: 14px;
+            background-position: -1885px 0
+        }
+        .iti-flag.gi {
+            height: 10px;
+            background-position: -1907px 0
+        }
+        .iti-flag.gl {
+            height: 14px;
+            background-position: -1929px 0
+        }
+        .iti-flag.gm {
+            height: 14px;
+            background-position: -1951px 0
+        }
+        .iti-flag.gn {
+            height: 14px;
+            background-position: -1973px 0
+        }
+        .iti-flag.gp {
+            height: 14px;
+            background-position: -1995px 0
+        }
+        .iti-flag.gq {
+            height: 14px;
+            background-position: -2017px 0
+        }
+        .iti-flag.gr {
+            height: 14px;
+            background-position: -2039px 0
+        }
+        .iti-flag.gs {
+            height: 10px;
+            background-position: -2061px 0
+        }
+        .iti-flag.gt {
+            height: 13px;
+            background-position: -2083px 0
+        }
+        .iti-flag.gu {
+            height: 11px;
+            background-position: -2105px 0
+        }
+        .iti-flag.gw {
+            height: 10px;
+            background-position: -2127px 0
+        }
+        .iti-flag.gy {
+            height: 12px;
+            background-position: -2149px 0
+        }
+        .iti-flag.hk {
+            height: 14px;
+            background-position: -2171px 0
+        }
+        .iti-flag.hm {
+            height: 10px;
+            background-position: -2193px 0
+        }
+        .iti-flag.hn {
+            height: 10px;
+            background-position: -2215px 0
+        }
+        .iti-flag.hr {
+            height: 10px;
+            background-position: -2237px 0
+        }
+        .iti-flag.ht {
+            height: 12px;
+            background-position: -2259px 0
+        }
+        .iti-flag.hu {
+            height: 10px;
+            background-position: -2281px 0
+        }
+        .iti-flag.ic {
+            height: 14px;
+            background-position: -2303px 0
+        }
+        .iti-flag.id {
+            height: 14px;
+            background-position: -2325px 0
+        }
+        .iti-flag.ie {
+            height: 10px;
+            background-position: -2347px 0
+        }
+        .iti-flag.il {
+            height: 15px;
+            background-position: -2369px 0
+        }
+        .iti-flag.im {
+            height: 10px;
+            background-position: -2391px 0
+        }
+        .iti-flag.in {
+            height: 14px;
+            background-position: -2413px 0
+        }
+        .iti-flag.io {
+            height: 10px;
+            background-position: -2435px 0
+        }
+        .iti-flag.iq {
+            height: 14px;
+            background-position: -2457px 0
+        }
+        .iti-flag.ir {
+            height: 12px;
+            background-position: -2479px 0
+        }
+        .iti-flag.is {
+            height: 15px;
+            background-position: -2501px 0
+        }
+        .iti-flag.it {
+            height: 14px;
+            background-position: -2523px 0
+        }
+        .iti-flag.je {
+            height: 12px;
+            background-position: -2545px 0
+        }
+        .iti-flag.jm {
+            height: 10px;
+            background-position: -2567px 0
+        }
+        .iti-flag.jo {
+            height: 10px;
+            background-position: -2589px 0
+        }
+        .iti-flag.jp {
+            height: 14px;
+            background-position: -2611px 0
+        }
+        .iti-flag.ke {
+            height: 14px;
+            background-position: -2633px 0
+        }
+        .iti-flag.kg {
+            height: 12px;
+            background-position: -2655px 0
+        }
+        .iti-flag.kh {
+            height: 13px;
+            background-position: -2677px 0
+        }
+        .iti-flag.ki {
+            height: 10px;
+            background-position: -2699px 0
+        }
+        .iti-flag.km {
+            height: 12px;
+            background-position: -2721px 0
+        }
+        .iti-flag.kn {
+            height: 14px;
+            background-position: -2743px 0
+        }
+        .iti-flag.kp {
+            height: 10px;
+            background-position: -2765px 0
+        }
+        .iti-flag.kr {
+            height: 14px;
+            background-position: -2787px 0
+        }
+        .iti-flag.kw {
+            height: 10px;
+            background-position: -2809px 0
+        }
+        .iti-flag.ky {
+            height: 10px;
+            background-position: -2831px 0
+        }
+        .iti-flag.kz {
+            height: 10px;
+            background-position: -2853px 0
+        }
+        .iti-flag.la {
+            height: 14px;
+            background-position: -2875px 0
+        }
+        .iti-flag.lb {
+            height: 14px;
+            background-position: -2897px 0
+        }
+        .iti-flag.lc {
+            height: 10px;
+            background-position: -2919px 0
+        }
+        .iti-flag.li {
+            height: 12px;
+            background-position: -2941px 0
+        }
+        .iti-flag.lk {
+            height: 10px;
+            background-position: -2963px 0
+        }
+        .iti-flag.lr {
+            height: 11px;
+            background-position: -2985px 0
+        }
+        .iti-flag.ls {
+            height: 14px;
+            background-position: -3007px 0
+        }
+        .iti-flag.lt {
+            height: 12px;
+            background-position: -3029px 0
+        }
+        .iti-flag.lu {
+            height: 12px;
+            background-position: -3051px 0
+        }
+        .iti-flag.lv {
+            height: 10px;
+            background-position: -3073px 0
+        }
+        .iti-flag.ly {
+            height: 10px;
+            background-position: -3095px 0
+        }
+        .iti-flag.ma {
+            height: 14px;
+            background-position: -3117px 0
+        }
+        .iti-flag.mc {
+            height: 15px;
+            background-position: -3139px 0
+        }
+        .iti-flag.md {
+            height: 10px;
+            background-position: -3160px 0
+        }
+        .iti-flag.me {
+            height: 10px;
+            background-position: -3182px 0
+        }
+        .iti-flag.mf {
+            height: 14px;
+            background-position: -3204px 0
+        }
+        .iti-flag.mg {
+            height: 14px;
+            background-position: -3226px 0
+        }
+        .iti-flag.mh {
+            height: 11px;
+            background-position: -3248px 0
+        }
+        .iti-flag.mk {
+            height: 10px;
+            background-position: -3270px 0
+        }
+        .iti-flag.ml {
+            height: 14px;
+            background-position: -3292px 0
+        }
+        .iti-flag.mm {
+            height: 14px;
+            background-position: -3314px 0
+        }
+        .iti-flag.mn {
+            height: 10px;
+            background-position: -3336px 0
+        }
+        .iti-flag.mo {
+            height: 14px;
+            background-position: -3358px 0
+        }
+        .iti-flag.mp {
+            height: 10px;
+            background-position: -3380px 0
+        }
+        .iti-flag.mq {
+            height: 14px;
+            background-position: -3402px 0
+        }
+        .iti-flag.mr {
+            height: 14px;
+            background-position: -3424px 0
+        }
+        .iti-flag.ms {
+            height: 10px;
+            background-position: -3446px 0
+        }
+        .iti-flag.mt {
+            height: 14px;
+            background-position: -3468px 0
+        }
+        .iti-flag.mu {
+            height: 14px;
+            background-position: -3490px 0
+        }
+        .iti-flag.mv {
+            height: 14px;
+            background-position: -3512px 0
+        }
+        .iti-flag.mw {
+            height: 14px;
+            background-position: -3534px 0
+        }
+        .iti-flag.mx {
+            height: 12px;
+            background-position: -3556px 0
+        }
+        .iti-flag.my {
+            height: 10px;
+            background-position: -3578px 0
+        }
+        .iti-flag.mz {
+            height: 14px;
+            background-position: -3600px 0
+        }
+        .iti-flag.na {
+            height: 14px;
+            background-position: -3622px 0
+        }
+        .iti-flag.nc {
+            height: 10px;
+            background-position: -3644px 0
+        }
+        .iti-flag.ne {
+            height: 15px;
+            background-position: -3666px 0
+        }
+        .iti-flag.nf {
+            height: 10px;
+            background-position: -3686px 0
+        }
+        .iti-flag.ng {
+            height: 10px;
+            background-position: -3708px 0
+        }
+        .iti-flag.ni {
+            height: 12px;
+            background-position: -3730px 0
+        }
+        .iti-flag.nl {
+            height: 14px;
+            background-position: -3752px 0
+        }
+        .iti-flag.no {
+            height: 15px;
+            background-position: -3774px 0
+        }
+        .iti-flag.np {
+            width: 13px;
+            height: 15px;
+            background-position: -3796px 0
+        }
+        .iti-flag.nr {
+            height: 10px;
+            background-position: -3811px 0
+        }
+        .iti-flag.nu {
+            height: 10px;
+            background-position: -3833px 0
+        }
+        .iti-flag.nz {
+            height: 10px;
+            background-position: -3855px 0
+        }
+        .iti-flag.om {
+            height: 10px;
+            background-position: -3877px 0
+        }
+        .iti-flag.pa {
+            height: 14px;
+            background-position: -3899px 0
+        }
+        .iti-flag.pe {
+            height: 14px;
+            background-position: -3921px 0
+        }
+        .iti-flag.pf {
+            height: 14px;
+            background-position: -3943px 0
+        }
+        .iti-flag.pg {
+            height: 15px;
+            background-position: -3965px 0
+        }
+        .iti-flag.ph {
+            height: 10px;
+            background-position: -3987px 0
+        }
+        .iti-flag.pk {
+            height: 14px;
+            background-position: -4009px 0
+        }
+        .iti-flag.pl {
+            height: 13px;
+            background-position: -4031px 0
+        }
+        .iti-flag.pm {
+            height: 14px;
+            background-position: -4053px 0
+        }
+        .iti-flag.pn {
+            height: 10px;
+            background-position: -4075px 0
+        }
+        .iti-flag.pr {
+            height: 14px;
+            background-position: -4097px 0
+        }
+        .iti-flag.ps {
+            height: 10px;
+            background-position: -4119px 0
+        }
+        .iti-flag.pt {
+            height: 14px;
+            background-position: -4141px 0
+        }
+        .iti-flag.pw {
+            height: 13px;
+            background-position: -4163px 0
+        }
+        .iti-flag.py {
+            height: 11px;
+            background-position: -4185px 0
+        }
+        .iti-flag.qa {
+            height: 8px;
+            background-position: -4207px 0
+        }
+        .iti-flag.re {
+            height: 14px;
+            background-position: -4229px 0
+        }
+        .iti-flag.ro {
+            height: 14px;
+            background-position: -4251px 0
+        }
+        .iti-flag.rs {
+            height: 14px;
+            background-position: -4273px 0
+        }
+        .iti-flag.ru {
+            height: 14px;
+            background-position: -4295px 0
+        }
+        .iti-flag.rw {
+            height: 14px;
+            background-position: -4317px 0
+        }
+        .iti-flag.sa {
+            height: 14px;
+            background-position: -4339px 0
+        }
+        .iti-flag.sb {
+            height: 10px;
+            background-position: -4361px 0
+        }
+        .iti-flag.sc {
+            height: 10px;
+            background-position: -4383px 0
+        }
+        .iti-flag.sd {
+            height: 10px;
+            background-position: -4405px 0
+        }
+        .iti-flag.se {
+            height: 13px;
+            background-position: -4427px 0
+        }
+        .iti-flag.sg {
+            height: 14px;
+            background-position: -4449px 0
+        }
+        .iti-flag.sh {
+            height: 10px;
+            background-position: -4471px 0
+        }
+        .iti-flag.si {
+            height: 10px;
+            background-position: -4493px 0
+        }
+        .iti-flag.sj {
+            height: 15px;
+            background-position: -4515px 0
+        }
+        .iti-flag.sk {
+            height: 14px;
+            background-position: -4537px 0
+        }
+        .iti-flag.sl {
+            height: 14px;
+            background-position: -4559px 0
+        }
+        .iti-flag.sm {
+            height: 15px;
+            background-position: -4581px 0
+        }
+        .iti-flag.sn {
+            height: 14px;
+            background-position: -4603px 0
+        }
+        .iti-flag.so {
+            height: 14px;
+            background-position: -4625px 0
+        }
+        .iti-flag.sr {
+            height: 14px;
+            background-position: -4647px 0
+        }
+        .iti-flag.ss {
+            height: 10px;
+            background-position: -4669px 0
+        }
+        .iti-flag.st {
+            height: 10px;
+            background-position: -4691px 0
+        }
+        .iti-flag.sv {
+            height: 12px;
+            background-position: -4713px 0
+        }
+        .iti-flag.sx {
+            height: 14px;
+            background-position: -4735px 0
+        }
+        .iti-flag.sy {
+            height: 14px;
+            background-position: -4757px 0
+        }
+        .iti-flag.sz {
+            height: 14px;
+            background-position: -4779px 0
+        }
+        .iti-flag.ta {
+            height: 10px;
+            background-position: -4801px 0
+        }
+        .iti-flag.tc {
+            height: 10px;
+            background-position: -4823px 0
+        }
+        .iti-flag.td {
+            height: 14px;
+            background-position: -4845px 0
+        }
+        .iti-flag.tf {
+            height: 14px;
+            background-position: -4867px 0
+        }
+        .iti-flag.tg {
+            height: 13px;
+            background-position: -4889px 0
+        }
+        .iti-flag.th {
+            height: 14px;
+            background-position: -4911px 0
+        }
+        .iti-flag.tj {
+            height: 10px;
+            background-position: -4933px 0
+        }
+        .iti-flag.tk {
+            height: 10px;
+            background-position: -4955px 0
+        }
+        .iti-flag.tl {
+            height: 10px;
+            background-position: -4977px 0
+        }
+        .iti-flag.tm {
+            height: 14px;
+            background-position: -4999px 0
+        }
+        .iti-flag.tn {
+            height: 14px;
+            background-position: -5021px 0
+        }
+        .iti-flag.to {
+            height: 10px;
+            background-position: -5043px 0
+        }
+        .iti-flag.tr {
+            height: 14px;
+            background-position: -5065px 0
+        }
+        .iti-flag.tt {
+            height: 12px;
+            background-position: -5087px 0
+        }
+        .iti-flag.tv {
+            height: 10px;
+            background-position: -5109px 0
+        }
+        .iti-flag.tw {
+            height: 14px;
+            background-position: -5131px 0
+        }
+        .iti-flag.tz {
+            height: 14px;
+            background-position: -5153px 0
+        }
+        .iti-flag.ua {
+            height: 14px;
+            background-position: -5175px 0
+        }
+        .iti-flag.ug {
+            height: 14px;
+            background-position: -5197px 0
+        }
+        .iti-flag.um {
+            height: 11px;
+            background-position: -5219px 0
+        }
+        .iti-flag.us {
+            height: 11px;
+            background-position: -5241px 0
+        }
+        .iti-flag.uy {
+            height: 14px;
+            background-position: -5263px 0
+        }
+        .iti-flag.uz {
+            height: 10px;
+            background-position: -5285px 0
+        }
+        .iti-flag.va {
+            width: 15px;
+            height: 15px;
+            background-position: -5307px 0
+        }
+        .iti-flag.vc {
+            height: 14px;
+            background-position: -5324px 0
+        }
+        .iti-flag.ve {
+            height: 14px;
+            background-position: -5346px 0
+        }
+        .iti-flag.vg {
+            height: 10px;
+            background-position: -5368px 0
+        }
+        .iti-flag.vi {
+            height: 14px;
+            background-position: -5390px 0
+        }
+        .iti-flag.vn {
+            height: 14px;
+            background-position: -5412px 0
+        }
+        .iti-flag.vu {
+            height: 12px;
+            background-position: -5434px 0
+        }
+        .iti-flag.wf {
+            height: 14px;
+            background-position: -5456px 0
+        }
+        .iti-flag.ws {
+            height: 10px;
+            background-position: -5478px 0
+        }
+        .iti-flag.xk {
+            height: 15px;
+            background-position: -5500px 0
+        }
+        .iti-flag.ye {
+            height: 14px;
+            background-position: -5522px 0
+        }
+        .iti-flag.yt {
+            height: 14px;
+            background-position: -5544px 0
+        }
+        .iti-flag.za {
+            height: 14px;
+            background-position: -5566px 0
+        }
+        .iti-flag.zm {
+            height: 14px;
+            background-position: -5588px 0
+        }
+        .iti-flag.zw {
+            height: 10px;
+            background-position: -5610px 0
+        }
+        .iti-flag {
+            width: 20px;
+            height: 15px;
+            box-shadow: 0 0 1px 0 #888;
+            background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/11.0.9/img/flags.png");
+            background-repeat: no-repeat;
+            background-color: #dbdbdb;
+            background-position: 20px 0
+        }
+        @media only screen and (-webkit-min-device-pixel-ratio:2),
+        only screen and (min--moz-device-pixel-ratio:2),
+        only screen and (-o-min-device-pixel-ratio:2 / 1),
+        only screen and (min-device-pixel-ratio:2),
+        only screen and (min-resolution:192dpi),
+        only screen and (min-resolution:2dppx) {
+            .iti-flag {
+                background-size: 5630px 15px;
+                background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/11.0.9/img/flags@2x.png")
+            }
+        }
+        body {
+            margin: 20px;
+            font-size: 14px;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #555
+        }
+        pre {
+            margin: 0 !important
+        }
+        .language-css .token.string,
+        .style .token.string,
+        .token.entity,
+        .token.operator,
+        .token.url,
+        .token.variable {
+            background: 0 0
+        }
+        button,
+        input {
+            height: 35px;
+            margin: 0;
+            padding: 6px 12px;
+            border-radius: 2px;
+            font-family: inherit;
+            font-size: 100%;
+            color: inherit
+        }
+        button[disabled],
+        input[disabled] {
+            background-color: #eee
+        }
+        input,
+        select {
+            border: 1px solid #ccc;
+            width: 250px
+        }
+        ::-webkit-input-placeholder {
+            color: #bbb
+        }
+        ::-moz-placeholder {
+            color: #bbb;
+            opacity: 1
+        }
+        :-ms-input-placeholder {
+            color: #bbb
+        }
+        button {
+            color: #fff;
+            background-color: #428bca;
+            border: 1px solid #357ebd
+        }
+        button:hover {
+            background-color: #3276b1;
+            border-color: #285e8e
+        }
+        #result {
+            margin-bottom: 100px
+        }
+        .back-arrow-btn i {
+            background: #fff;
+            font-size: 16px;
+            padding: 2px 3px;
+            border-radius: 50px;
+            border: 2px solid #6c6e70;
+            color: #6c6e70;
+            margin-right: 15px;
+            width: 24px;
+            height: 24px
+        }
+        #showerroralert,
+        #showsuccessalert {
+            display: none
+        }
+    </style>
+    <script>
+        window.console = window.console || function(e) {}, document.location.search.match(/type=embed/gi) && window.parent.postMessage("resize", "*");
+        var page_origin = window.location.origin;
+        let anchor = document.getElementById("anchor");
+        anchor.href = page_origin;
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/11.0.9/css/intlTelInput.css" rel="stylesheet" media="screen">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.5/JsBarcode.all.min.js" integrity="sha512-QEAheCz+x/VkKtxeGoDq6nsGyzTx/0LMINTgQjqZ0h3+NjP+bCsPYz3hn0HnBkGmkIFSr7QcEZT+KyEM7lbLPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/11.0.9/js/intlTelInput.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/11.0.9/js/intlTelInput.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/11.0.9/js/utils.js"></script>
+</head>
+<input type="hidden" id="tabID" value="<?= $tabID; ?>">
+<div class="main-content app-content mt-0">
+    <div class="side-app">
+        <div class="main-container container-fluid">
+            <div class="page-header">
+                <h1 class="page-title"><a href="javascript:void(0)" class="back-arrow-btn"><i class="fa fa-chevron-left" onclick="history.go(-1)" aria-hidden="true"></i></a><?= $title; ?></h1>
+                <div>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="" id="anchor">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?= $title; ?></li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row row-sm">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body py-3">
+                            <div class="row g-3 align-items-end">
+                                <div class="col-lg-3 col-md-6">
+                                    <label class="form-label fw-semibold mb-1">Select Date</label>
+                                    <input class="form-control" type="text"
+                                        id="datefilter" name="datefilter"
+                                        value="<?= date('m/d/Y') . ' - ' . date('m/d/Y'); ?>"
+                                        placeholder="MM/DD/YYYY - MM/DD/YYYY"
+                                        autocomplete="off"
+                                        oninput="this.value = this.value.replace(/[^0-9- \/]/g, '');">
+                                </div>
+                                <div class="col-lg-2 col-md-4">
+        <label class="form-label fw-semibold mb-1">Current State</label>
+        <select id="filter_state" class="form-control selectpicker" data-live-search="true">
+            <option value="">All States</option>
+            <?php while($s = mysqli_fetch_assoc($state_filter_query)): ?>
+                <option value="<?= htmlspecialchars($s['current_state']) ?>"><?= htmlspecialchars($s['current_state']) ?></option>
+            <?php endwhile; ?>
+        </select>
+    </div>
+
+    <div class="col-lg-2 col-md-4">
+        <label class="form-label fw-semibold mb-1">Current District</label>
+        <select id="filter_district" class="form-control selectpicker" data-live-search="true">
+            <option value="">All Districts</option>
+            <?php while($d = mysqli_fetch_assoc($district_filter_query)): ?>
+                <option value="<?= htmlspecialchars($d['current_district']) ?>"><?= htmlspecialchars($d['current_district']) ?></option>
+            <?php endwhile; ?>
+        </select>
+    </div>
+
+                                <div class="col-lg-3 col-md-6">
+                                    <label class="form-label fw-semibold mb-1">Search</label>
+                                    <input type="text"
+                                        id="fieldname"
+                                        oninput="viewtable($(this).val())"
+                                        class="form-control"
+                                        placeholder="Phone / Name / Email">
+                                </div>
+                                <div class="col-lg-3 col-md-6">
+                                    <label class="form-label fw-semibold mb-1">Status</label>
+                                    <select id="deletedstatus" class="form-select">
+                                        <option value="">Select Status</option>
+                                        <option value="0" selected>Active</option>
+                                        <!--<?= $addName; ?>-->
+                                        <option value="1">Deleted</option>
+                                        <!--<?= $addName; ?>-->
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 col-md-6 d-grid">
+                                    <button class="btn btn-primary" onclick="viewtable()">
+                                        <i class="fa fa-search me-1"></i> Apply Filters
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 fw-semibold"><?= $title; ?></h5>
+                            <!--<button class="btn btn-success"-->
+                            <!--        type="button"-->
+                            <!--        onclick="$('#addagent').modal('show')">-->
+                            <!--    <i class="fa fa-plus me-1"></i> Create User-->
+                            <!--</button>-->
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-nowrap border-bottom" id="exampleTable" style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th class="wd-25p border-bottom-0">Created On</th>
+                                            <th class="wd-25p border-bottom-0">Type</th>
+                                            <th class="wd-15p border-bottom-0">Full Name</th>
+                                            <th class="wd-15p border-bottom-0">Phone No.</th>
+                                            <th class="wd-25p border-bottom-0">E-mail</th>
+                                            <th class="wd-15p border-bottom-0">Wallet Balance</th>
+                                            <th class="wd-15p border-bottom-0">Bonus Points</th>
+                                            <th class="wd-15p border-bottom-0">Current District</th>
+                                            <th class="wd-15p border-bottom-0">Current State</th>
+                                            <th class="wd-15p border-bottom-0">Current Address</th>
+                                            <th class="wd-25p border-bottom-0">Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addagent" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Header -->
+            <div class="modal-header">
+                <h5 class="modal-title fw-semibold">
+                    Add <?= $addName; ?>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="createUserForm">
+                <div class="modal-body">
+                    <div id="createformerror"></div>
+                    <!-- First Name -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Name <span class="text-danger">*</span>
+                        </label>
+                        <input class="form-control"
+                            name="name"
+                            type="text"
+                            placeholder="Enter first name"
+                            required>
+                    </div>
+                    <!-- Last Name -->
+                    <!-- Mobile -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Mobile Number <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">+91</span>
+                            <input class="form-control"
+                                name="mobile"
+                                type="tel"
+                                maxlength="10"
+                                pattern="[0-9]{10}"
+                                placeholder="Enter 10-digit mobile number"
+                                required>
+                        </div>
+                    </div>
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input class="form-control"
+                            name="email"
+                            type="email"
+                            placeholder="Enter email address"
+                            required>
+                    </div>
+                    <!-- Role -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Role Type <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-control"
+                            name="role"
+                            required>
+                            <option value="">Select Role</option>
+                            <?php
+                            $roles = mysqli_query($con, "SELECT * FROM role ORDER BY id DESC");
+                            while ($value = mysqli_fetch_array($roles)) : ?>
+                                <option value="<?= $value['id']; ?>">
+                                    <?= utf8_encode($value['name']); ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">
+                            State <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-control form-select" name="state_name" required>
+                            <option value="">Select State</option>
+                            <?php
+                            $query = mysqli_query($con, "SELECT id, name FROM states WHERE country_code = 'IN'");
+                            while ($rows = mysqli_fetch_assoc($query)) {
+                                $selected = ($rows['name'] == $row['state']) ? 'selected' : '';
+                                echo "<option value='{$rows['name']}' $selected>{$rows['name']}</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">
+                            District <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-control" name="district_name" required>
+                            <option value="">Select District</option>
+                            <?php
+                            $query = mysqli_query($con, "SELECT id, district_name FROM districts");
+                            while ($district = mysqli_fetch_assoc($query)) {
+                                $selected = ($district['id'] == $row['districts_id']) ? 'selected' : '';
+                                echo '<option value="' . $district['id'] . '" ' . $selected . '>'
+                                    . htmlspecialchars($district['district_name']) .
+                                    '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Password <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <input class="form-control"
+                                name="password"
+                                id="password"
+                                type="password"
+                                minlength="6"
+                                required>
+                            <!-- Show/Hide Button -->
+                            <button class="btn btn-outline-secondary toggle-password" type="button">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                            <!-- Generate -->
+                            <button class="btn btn-outline-success generate-btn" type="button" onclick="generatePassword(7)">
+                                <i class="fa fa-refresh"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success w-100"
+                        type="button"
+                        onclick="saveUserDirect()">
+                        Create User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="otp">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content modal-content-demo">
+            <div id="otperror"></div>
+            <div class="modal-header">
+                <h6 class="modal-title">OTP</h6>
+                <button class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <form action="#" class="otp_form">
+                        <div class="form-group">
+                            <div class="model-text">
+                                <h3 class="text-center"><b id="title"></b> verification</h3>
+                                <p class="text-center">Enter the code we just send on your <b id="title"></b> <b id="mno"></b></p>
+                                <br>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <input type="text" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');" onkeyup="onKeyUpEvent(1, event)" onfocus="onFocusEvent(1)" class="form-control" id="otp1" name="otp1">
+                                </div>
+                                <div class="col-3">
+                                    <input type="text" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');" onkeyup="onKeyUpEvent(2, event)" onfocus="onFocusEvent(2)" class="form-control" id="otp2" name="otp2">
+                                </div>
+                                <div class="col-3">
+                                    <input type="text" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');" onkeyup="onKeyUpEvent(3, event)" onfocus="onFocusEvent(3)" class="form-control" id="otp3" name="otp3">
+                                </div>
+                                <div class="col-3">
+                                    <input type="text" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');" onkeyup="onKeyUpEvent(4, event)" onfocus="onFocusEvent(4)" class="form-control" id="otp4" name="otp4">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <br>
+                </div>
+            </div>
+            <div class="modal-footer" id="otpbtn">
+                <!-- <button class="btn ripple btn-success" onclick="saveformNew()" type="button">Submit</button>
+               <button class="btn ripple btn-danger" data-bs-dismiss="modal" type="button">Close</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="sussessmodal">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content modal-content-demo">
+            <div class="modal-header">
+                <h6 class="modal-title">Success</h6>
+                <button class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="successerror">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn ripple btn-danger" data-bs-dismiss="modal" type="button">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="delete">
+    <div class="modal-dialog modal-dialog-centered text-center" role="document">
+        <div class="modal-content tx-size-sm">
+            <div class="modal-body text-center p-4 pb-5">
+                <button aria-label="Close" class="btn-close position-absolute" data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <i class="icon icon-close fs-70 text-danger lh-1 my-5 d-inline-block"></i>
+                <h4 class="text-danger">Are you sure you want to delete page</h4>
+                <button aria-label="Close" class="btn btn-primary pd-x-25" data-bs-dismiss="modal">Yes</button>
+                <button aria-label="Close" class="btn btn-danger pd-x-25" data-bs-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="pushModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-semibold">Send Push Notification</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="pusherror"></div>
+                <form id="pushNotificationForm">
+                    <input type="hidden" id="push_user_id" name="user_id">
+                    <div class="mb-3">
+                        <label class="form-label">Notification Title <span class="text-danger">*</span></label>
+                        <input class="form-control" id="push_title" type="text" placeholder="Enter Title (e.g. Special Offer!)" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notification Body <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="push_body" placeholder="Enter Body (You can use {{name}} here)" required style="height: 100px;"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <button class="btn btn-primary" type="button" onclick="submitPushNotification()">
+                    <i class="fa fa-paper-plane me-1"></i> Send Push
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="showimgmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Preview</h5>
+                <button type="button" class="close" onclick="closemodal('showimgmodal')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="imagecontent">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteinfo" tabindex="-1" role="dialog" aria-labelledby="customModalLabel" aria-modal="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="customModalLabel">Delete</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"> <span aria-hidden="true">×</span> </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <p class="mb-3 modalques">Are you sure to Delete?</p>
+                </div>
+            </div>
+            <div class="modal-footer custom">
+                <div class="left-side">
+                    <button aria-label="Close" class="btn btn-primary pd-x-25" data-bs-dismiss="modal">No</button>
+                </div>
+                <div class="divider"></div>
+                <div class="right-side">
+                    <button aria-label="Close" class="btn btn-danger pd-x-25 success" data-bs-dismiss="modal">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script id="rendered-js">
+    // Function to open the Push Notification Modal
+    function openPushModal(userId) {
+        // Clear previous data
+        $('#pusherror').html('');
+        $('#push_title').val('');
+        $('#push_body').val('');
+        // Set user ID and show modal
+        $('#push_user_id').val(userId)
+        $('#pushModal').modal('show');
+    }
+    // Function to handle the AJAX Submission
+    function submitPushNotification() {
+        let userId = $('#push_user_id').val();
+        let title = $('#push_title').val();
+        let body = $('#push_body').val();
+        if (!userId || isNaN(userId)) {
+            toast('error', 'Missing or invalid User ID.');
+            $('#pushModal').modal('hide');
+            return false;
+        }
+        if (title.trim() === '' || body.trim() === '') {
+            $('#pusherror').html('<div class="alert alert-danger">Both Title and Body are required!</div>');
+            return false;
+        }
+        let parsedUserId = parseInt(userId, 10);
+        let formdata = {
+            user_ids: [parsedUserId],
+            title: title,
+            body: body,
+            sent_by: parseInt('<?= $_SESSION['memid']; ?>') // Passing logged-in user to Controller
+        };
+        $.ajax({
+            type: 'POST',
+            url: 'https://www.goride.run/api/send-customer-push',
+            data: formdata,
+            headers: {
+                "Authorization": "Bearer asdfghjklpoiuytrewqzxcvbnm!@$%^&*()"
+            },
+            beforeSend: function() {
+                // Button Loading State
+                $('#pushModal .btn-primary').html('<span class="spinner-border spinner-border-sm"></span> Sending...').prop('disabled', true);
+            },
+            success: function(data) {
+                // Close modal immediately
+                $('#pushModal').modal('hide');
+                // Trigger your custom toast notification
+                if (data.status === true) {
+                    toast('success', data.message);
+                } else {
+                    toast('error', data.message);
+                }
+            },
+            error: function(xhr) {
+                // Close modal immediately
+                $('#pushModal').modal('hide');
+                // Extract the actual error message from the controller and toast it
+                let errorMsg = xhr.responseJSON ? xhr.responseJSON.message : "Something went wrong!";
+                toast('error', errorMsg);
+            },
+            complete: function() {
+                // Reset Button State behind the scenes
+                $('#pushModal .btn-primary').html('<i class="fa fa-paper-plane me-1"></i> Send Push').prop('disabled', false);
+            }
+        });
+    }
+    var state = '<?= strtolower($row['address']); ?>';
+    var city = '<?= strtolower($row['city']); ?>';
+    var origin = window.location.origin;
+    var url = origin + "/ajax/service/datatable_services.php";
+    var agenturl = origin + "/ajax/service/agent_services.php";
+    $(function() {
+        $('#filter_state, #filter_district').selectpicker();
+        $(document).on('change', '.toggle-profile', function() {
+            let checkbox = $(this);
+            let isChecked = checkbox.is(':checked');
+            let slider = checkbox.siblings('span');
+            let innerKnob = slider.find('.slider-inner');
+            slider.css('background-color', isChecked ? '#49117cc9' : '#ccc');
+            innerKnob.css('transform', isChecked ? 'translateX(22px)' : 'translateX(0)');
+            let userId = checkbox.data('id');
+            let status = isChecked ? 1 : 0;
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    method: 'change_sub_status',
+                    user_id: userId,
+                    status: status
+                },
+                success: function(data) {
+                    var response = JSON.parse(data);
+                    if (response.type == 1) {
+                        toast('success', response.result);
+                    } else {
+                        toast('error', response.result);
+                        checkbox.prop('checked', !isChecked);
+                        slider.css('background-color', !isChecked ? '#49117cc9' : '#ccc');
+                        innerKnob.css('transform', !isChecked ? 'translateX(22px)' : 'translateX(0)');
+                    }
+                },
+                error: function() {
+                    toast('error', 'Something went wrong');
+                    checkbox.prop('checked', !isChecked);
+                    slider.css('background-color', !isChecked ? '#49117cc9' : '#ccc');
+                    innerKnob.css('transform', !isChecked ? 'translateX(22px)' : 'translateX(0)');
+                }
+            });
+        });
+        viewtable();
+    });
+    function togglePassword() {
+        const passwordInput = document.getElementById("password");
+        const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+        passwordInput.setAttribute("type", type);
+    }
+    function generatePassword() {
+        const length = 10;
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$!";
+        let password = "";
+        for (let i = 0; i < length; i++) {
+            password += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        document.getElementById("password").value = password;
+    }
+    $(function() {
+        $('input[name="datefilter"]').daterangepicker({
+            startDate: moment(), // Forces the plugin to recognize today internally
+            endDate: moment(), // Forces the plugin to recognize today internally
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            },
+            ranges: {
+                'Today': [moment().startOf('day'), moment().endOf('day')],
+                'Yesterday': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
+                'Last 7 Days': [moment().subtract(6, 'days').startOf('day'), moment().endOf('day')],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'This Year': [moment().startOf('year'), moment().endOf('year')],
+                'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+            }
+        });
+        $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            viewtable(); // Auto-refresh when a date is selected
+        });
+        $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+            viewtable(); // Auto-refresh when dates are cleared
+        });
+        // Load the table AFTER the datepicker is fully initialized
+        viewtable();
+    });
+    function viewtable() {
+        let tabID = $('#tabID').val();
+        var newdate = $('#datefilter').val();
+        if (newdate != '') {
+            var datefrom = moment($('#datefilter').data('daterangepicker').startDate).format("YYYY-MM-DD HH:mm:ss");
+            var datefill = moment($('#datefilter').data('daterangepicker').endDate).format("YYYY-MM-DD HH:mm:ss");
+        } else {
+            var datefrom = '';
+            var datefill = '';
+        }
+        let fieldname = $('#fieldname').val();
+        let deletedstatus = $('#deletedstatus').val();
+        
+        // NEW: Capture the state and district values
+        let filter_state = $('#filter_state').val();
+        let filter_district = $('#filter_district').val();
+
+        let act = deletedstatus;
+        if (datefrom != '' || datefill != '' || fieldname != '' || deletedstatus != '' || deletedstatus == '' || filter_state != '' || filter_district != '') {
+            var table = $('#exampleTable').DataTable();
+            table.destroy();
+
+            // --- FIXED: RESTORED EXCEL TITLE LOGIC ---
+            var excelTitle = 'My Users List Reports'; 
+            if ((datefrom != '' || datefill != '') && (deletedstatus == 1 && deletedstatus != "")) {
+                excelTitle = 'My Users List Reports : (' + fieldname + ' Deleted <?= $addName; ?> ' + datefrom + ' to ' + datefill + ')';
+            } else if ((datefrom != '' || datefill != '') && (deletedstatus == 0 && deletedstatus != "")) {
+                excelTitle = 'My Users List Reports : (' + fieldname + ' Active <?= $addName; ?> ' + datefrom + ' to ' + datefill + ')';
+            } else if (datefrom != '' || datefill != '') {
+                excelTitle = 'My Users List Reports : (' + fieldname + ' ' + datefrom + ' to ' + datefill + ')';
+            } else if (deletedstatus == 1) {
+                excelTitle = 'My Users List Reports : (' + fieldname + ' Deleted <?= $addName; ?>)';
+            } else if (deletedstatus == "") {
+                excelTitle = 'My Users List Reports : (all data)';
+            } else if (deletedstatus == 0) {
+                excelTitle = 'My Users List Reports : (' + fieldname + ' Active <?= $addName; ?>)';
+            }
+            // -----------------------------------------
+
+            table = $("#exampleTable").DataTable({
+                columnDefs: [{
+                    type: 'date',
+                    targets: [1]
+                }],
+                paging: true,
+                searching: true,
+                info: true,
+                ajax: {
+                    url: url,
+                    method: "POST",
+                    dataSrc: "",
+                    data: {
+                        method: 'list_agent',
+                        role: '1,5,6,7,0',
+                        type: 'users',
+                        datefill: datefill,
+                        fieldname: fieldname,
+                        datefrom: datefrom,
+                        deletedstatus: deletedstatus,
+                        filter_state: filter_state,
+                        filter_district: filter_district
+                    }
+                },
+                dom: 'Bfrtip',
+                lengthMenu: [
+                    [10, 25, 50, 100, 200, 500, -1],
+                    [10, 25, 50, 100, 200, 500, 'All'],
+                ],
+                buttons: [
+                    'pageLength',
+                    'copy',
+                    {
+                        extend: 'excelHtml5',
+                        title: excelTitle
+                    },
+                    // --- PLACE TO PASTE: NEW COPY MOBILE NUMBERS BUTTON ---
+                    {
+                        text: 'Copy Mobile Numbers',
+                        className: 'btn', // You can change the class to match your theme
+                        action: function ( e, dt, node, config ) {
+                            // Extract data from the 'mobile' column (index 3) of currently filtered rows
+                            var mobileData = dt.column(3, { search: 'applied' }).data().toArray();
+                            
+                            // Remove empty/null values and join with a comma
+                            var commaSeparatedMobiles = mobileData.filter(function(val) { 
+                                return val && val.trim() !== ''; 
+                            }).join(',');
+
+                            if (commaSeparatedMobiles) {
+                                // Try modern clipboard API first
+                                if (navigator.clipboard && window.isSecureContext) {
+                                    navigator.clipboard.writeText(commaSeparatedMobiles).then(function() {
+                                        toast('success', 'Mobile numbers copied to clipboard!');
+                                    });
+                                } else {
+                                    // Fallback for older browsers or non-HTTPS environments
+                                    var tempTextArea = document.createElement("textarea");
+                                    tempTextArea.value = commaSeparatedMobiles;
+                                    // Move element out of view so it doesn't shift the layout
+                                    tempTextArea.style.position = "absolute";
+                                    tempTextArea.style.left = "-9999px";
+                                    document.body.appendChild(tempTextArea);
+                                    tempTextArea.select();
+                                    document.execCommand("copy");
+                                    document.body.removeChild(tempTextArea);
+                                    
+                                    toast('success', 'Mobile numbers copied to clipboard!');
+                                }
+                            } else {
+                                toast('error', 'No mobile numbers found to copy!');
+                            }
+                        }
+                    }
+                    // --------------------------------------------------------
+                ],
+                columns: [{
+                        data: null,
+                        render: function(data, type, row, meta) {
+                            return moment(data.createdat).format("DD MMM YYYY hh:mm a")
+                        }
+                    },
+                    {
+                        data: "rollType"
+                    },
+                    {
+                        data: "name"
+                    },
+                    {
+                        data: "mobile"
+                    },
+                    {
+                        data: "email"
+                    },
+                    {
+                        data: "walletBalance"
+                    },
+                    {
+                        data: "cash_points"
+                    },
+                    {
+                        data: "current_district"
+                    },
+                    {
+                        data: "current_state"
+                    },
+                    {
+                        data: "current_address"
+                    },
+                    {
+                        data: "action"
+                    }
+                ]
+            });
+        } else {
+            toast('error', 'Please Fill Any One');
+        }
+    }
+    function sendotp() {
+        document.getElementById('createformerror').innerHTML = '';
+        let saveRaffleIDBTN = $('#smallmodal1');
+        let name = $('#name').val();
+        let lname = $('#lname').val();
+        let dob = $('#dob').val();
+        let nationlaity = $('#nationlaity').val();
+        let tabID = $('#tabID').val();
+        let pass = $('#password').val();
+        let c = '';
+        if (tabID == 'customer') {
+            c = true;
+        } else {
+            c = (pass.length >= 6 && tabID != 'customer');
+        }
+        // function checkLength(pass) {
+        if (name != '') {
+            if (lname == '' || lname == null || lname == undefined) {
+                document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">Enter Last name</div>';
+                return false;
+            } else {
+                document.getElementById('createformerror').innerHTML = ''; // Clear the error message
+            }
+            if (dob == '' || dob == null || dob == undefined) {
+                document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">Enter Date of Birth</div>';
+                return false;
+            } else {
+                document.getElementById('createformerror').innerHTML = ''; // Clear the error message
+            }
+            let countrycode = $('.selected-dial-code').text()
+            let number = $.trim(telInput.val());
+            var test = number;
+            var trim_number = parseInt(test.charAt(0));
+            if (trim_number == 0) {
+                number = number.slice(1);
+            }
+            if ($('#email').val().trim() == '') {
+                Email_check();
+                return false;
+            }
+            let email = $('#email').val();
+            if ((email != '') && (validateEmail(email))) {
+                if (number != '') {
+                    //  alert(nationlaity);
+                    if ($('#bulidingname').val() == '') {
+                        let address = "<?= $row['building_name']; ?>";
+                        if (address != '') {
+                            document.getElementById('bulidingname').value = address;
+                        } else {
+                            document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">Field Required - Building Name</div>';
+                        }
+                        return false;
+                    }
+                    if (nationlaity == '' || nationlaity == null || nationlaity == undefined) {
+                        document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">Enter Country</div>';
+                        return false;
+                    } else {
+                        document.getElementById('createformerror').innerHTML = ''; // Clear the error message
+                    }
+                    if ($('#nationlaity').val() == '') {
+                        // toast('warning', 'Field Required - Country');
+                        // let nationality = "<?= $row['nationality']; ?>";
+                        // if (nationality != '') {
+                        // 	document.getElementById('Country').value = nationality;
+                        // } else {
+                        document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">Field Required - Country</div>';
+                        // }
+                        return false;
+                    }
+                    if ($('#billing_address').val() == '') {
+                        // let address = "<?= $row['address']; ?>";
+                        // if (address != '') {
+                        // 	document.getElementById('buildinglocation').value = address;
+                        // } else {
+                        document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">Field Required - State / Emirates</div>';
+                        // }
+                        return false;
+                    }
+                    if ($('#billing_city').val() == '') {
+                        // let city = "<?= $row['city']; ?>";
+                        // if (city != '') {
+                        // 	document.getElementById('City').value = city;
+                        // } else {
+                        document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">Field Required - State / Emirates</div>';
+                        // }
+                        return false;
+                    }
+                    if (c) {
+                        // document.getElementById('rebtn').innerHTML = '<button class="btn btn-primary" type="button" disabled><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading...</button>';
+                        let country = countrycode.substring(1);
+                        let mobile = country + number;
+                        var formdata = $('.cls_booking_form').serializeArray();
+                        formdata.push({
+                            name: 'method',
+                            value: "send_otp"
+                        });
+                        formdata.push({
+                            name: 'mobile',
+                            value: mobile
+                        });
+                        formdata.push({
+                            name: 'countrycode',
+                            value: countrycode
+                        });
+                        var post_data = formdata;
+                        $.ajax({
+                            type: 'POST',
+                            url: window.location.origin + "/ajax/service/customer_services.php",
+                            data: post_data,
+                            beforeSend: function() {
+                                // Button Loading
+                                saveRaffleIDBTN.html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Loading...`).prop('disabled', true);
+                            },
+                            success: function(data) {
+                                var response = JSON.parse(data);
+                                if (response != "") {
+                                    if (response.type == 1) {
+                                        document.getElementById('otperror').innerHTML = '<div class="alert alert-success" role="alert">' + response.result + '</div>';
+                                        $('#addagent').modal('hide');
+                                        document.getElementById('rebtn').innerHTML = '<button class="btn ripple btn-success" id="smallmodal" type="button" onclick="sendotp()">Create <?= $addName; ?></button>';
+                                        document.getElementById('mno').innerText = response.Newmobile;
+                                        document.getElementById('title').innerText = response.title;
+                                        document.getElementById('otpbtn').innerHTML = response.otpbtn;
+                                        $('#otp').modal('show');
+                                    } else {
+                                        document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">' + response.result + '</div>';
+                                        document.getElementById('rebtn').innerHTML = '<button class="btn ripple btn-success" id="smallmodal" type="button" onclick="sendotp()">Create <?= $addName; ?></button>';
+                                    }
+                                }
+                            },
+                            complete: function() {
+                                // Re-enable button after request completes
+                                saveRaffleIDBTN.html('Create <?= $addName; ?>').prop('disabled', false);
+                            }
+                        });
+                        // var onsuccess = function(data) {
+                        // 	var response = JSON.parse(data);
+                        // 	if (response != "") {
+                        // 		if (response.type == 1) {
+                        // 			document.getElementById('otperror').innerHTML = '<div class="alert alert-success" role="alert">' + response.result + '</div>';
+                        // 			$('#addagent').modal('hide');
+                        // 			document.getElementById('rebtn').innerHTML = '<button class="btn ripple btn-success" id="smallmodal" type="button" onclick="sendotp()">Create <?= $addName; ?></button>';
+                        // 			document.getElementById('mno').innerText = response.Newmobile;
+                        // 			document.getElementById('title').innerText = response.title;
+                        // 			document.getElementById('otpbtn').innerHTML = response.otpbtn;
+                        // 			$('#otp').modal('show');
+                        // 		} else {
+                        // 			document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">' + response.result + '</div>';
+                        // 			document.getElementById('rebtn').innerHTML = '<button class="btn ripple btn-success" id="smallmodal" type="button" onclick="sendotp()">Create <?= $addName; ?></button>';
+                        // 		}
+                        // 	}
+                        // }
+                        // do_ajax_call(post_data, onsuccess, window.location.origin + "/ajax/service/customer_services.php");
+                    } else {
+                        document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">Password - Length must be min 6 characters</div>';
+                    }
+                } else {
+                    document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">Enter the mobile no!</div>';
+                    // alert("length must be exactly 6 characters")
+                }
+            } else {
+                document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">Enter the email!</div>';
+                // alert("length must be exactly 6 characters")
+            }
+        } else {
+            document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">Enter name</div>';
+        }
+        // }
+    }
+    function saveformNew(insert_id) {
+        if (insert_id != '') {
+            let otpmodal1 = $('#otpmodal1');
+            let tabID = $('#tabID').val();
+            var formdata = $('.otp_form').serializeArray();
+            formdata.push({
+                name: 'method',
+                value: "add_agent_new"
+            });
+            formdata.push({
+                name: 'tabID',
+                value: tabID
+            });
+            formdata.push({
+                name: 'insert_id',
+                value: insert_id
+            });
+            var post_data = formdata;
+            $.ajax({
+                type: 'POST',
+                url: window.location.origin + "/ajax/service/customer_services.php",
+                data: post_data,
+                beforeSend: function() {
+                    // Button Loading
+                    otpmodal1.html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Loading...`).prop('disabled', true);
+                },
+                success: function(data) {
+                    var response = JSON.parse(data);
+                    if (response != "") {
+                        if (response.type == 1) {
+                            document.getElementById('otperror').innerHTML = '<div class="alert alert-success" role="alert">' + response.result + '</div>';
+                            $('#otp').modal('hide');
+                            document.getElementById('successerror').innerHTML = '<div class="alert alert-success" role="alert">' + response.result + '</div>';
+                            $('#sussessmodal').modal('show');
+                            var table = $('#exampleTable').DataTable();
+                            table.destroy();
+                            location.reload();
+                            viewtable();
+                        } else {
+                            document.getElementById('otperror').innerHTML = '<div class="alert alert-danger" role="alert">' + response.result + '</div>';
+                        }
+                    }
+                },
+                complete: function() {
+                    // Reset Button
+                    otpmodal1.html('Submit').prop('disabled', false);
+                }
+            });
+        }
+    }
+    function saveUserDirect() {
+        let formdata = $('#createUserForm').serializeArray();
+        formdata.push({
+            name: 'method',
+            value: 'add_user_direct'
+        });
+        $.ajax({
+            type: 'POST',
+            url: window.location.origin + "/ajax/service/customer_services.php",
+            data: formdata,
+            beforeSend: function() {
+                $('.btn-success').html('<span class="spinner-border spinner-border-sm"></span> Loading...')
+                    .prop('disabled', true);
+            },
+            success: function(data) {
+                var response = JSON.parse(data);
+                if (response.type == 1) {
+                    $('#createformerror').html(
+                        '<div class="alert alert-success">' + response.result + '</div>'
+                    );
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    $('#createformerror').html(
+                        '<div class="alert alert-danger">' + response.result + '</div>'
+                    );
+                }
+            },
+            complete: function() {
+                $('.btn-success').html('Create User')
+                    .prop('disabled', false);
+            }
+        });
+    }
+    function saveform() {
+        var formdata = $('.cls_booking_form').serializeArray();
+        formdata.push({
+            name: 'method',
+            value: "add_agent"
+        });
+        var post_data = formdata;
+        var onsuccess = function(data) {
+            var response = JSON.parse(data);
+            if (response != "") {
+                if (response.type == 0) {
+                    $("#showsuccessalert").hide();
+                    $("#showerroralert").show();
+                    $("#showerroralert").html(response.result);
+                } else {
+                    $("#showerroralert").hide();
+                    $("#showsuccessalert").show();
+                    $("#showsuccessalert").html(response.result);
+                }
+            }
+        }
+        do_ajax_call(post_data, onsuccess);
+    }
+    function deletelist(str) {
+        var tabID = $('#tabID').val();
+        var heading = "Delete Agent";
+        var Question = "Are you sure to Delete Customer?";
+        if (tabID == 'customer') {
+            heading = 'Delete Customer';
+            Question = "Are you sure to Delete?";
+        }
+        var post_data = {
+            deleteid: str,
+            method: 'deleteagent_customer'
+        };
+        var onsuccess = function(data) {
+            var response = JSON.parse(data);
+            $("#deleteinfo").modal("hide");
+            // ('#exampleTable').dataTable({
+            // 	"bServerSide": true,
+            // 	paging: false,
+            // 	searching: false,
+            // 	"bDestroy": true
+            // });
+            // viewtable();
+            var table = $('#exampleTable').DataTable();
+            table.destroy();
+            viewtable();
+        }
+        var del_ok = function(event) {
+            do_ajax_call(post_data, onsuccess);
+        };
+        confirmdelete(heading, Question, del_ok);
+    }
+    function jump(field, autoMove) {
+        if (field.value.length >= field.maxLength) {
+            document.getElementById(autoMove).focus();
+        }
+    }
+    function suspendagent(str) {
+        swal.fire({
+            title: 'Suspended Reason',
+            input: 'textarea',
+            showCancelButton: true,
+            allowOutsideClick: false
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                if (result.value != '') {
+                    var formdata = [];
+                    formdata.push({
+                        name: 'method',
+                        value: "suspended_agent"
+                    });
+                    formdata.push({
+                        name: 'userid',
+                        value: str
+                    });
+                    formdata.push({
+                        name: 'reason',
+                        value: result.value
+                    });
+                    var post_data = formdata;
+                    var onsuccess = function(data) {
+                        var response = JSON.parse(data);
+                        if (response != "") {
+                            if (response.type == 1) {
+                                paymentSuccess('success', response.result);
+                                viewtable();
+                            } else {
+                                paymentSuccess('error', response.result);
+                            }
+                        }
+                    }
+                    do_ajax_call(post_data, onsuccess, agenturl);
+                    // console.log(result.value);
+                    // paymentSuccess('success', 's');
+                } else {
+                    toast('error', 'Please Fill the Reason');
+                }
+            }
+        })
+    }
+    function closemodal(id) {
+        $('#' + id).modal('hide');
+    }
+    function unsuspendagent(str) {
+        swal.fire({
+            title: ' Un Suspended Reason',
+            input: 'textarea',
+            showCancelButton: true,
+            allowOutsideClick: false
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                if (result.value != '') {
+                    var formdata = [];
+                    formdata.push({
+                        name: 'method',
+                        value: "unsuspendagent_agent"
+                    });
+                    formdata.push({
+                        name: 'userid',
+                        value: str
+                    });
+                    formdata.push({
+                        name: 'reason',
+                        value: result.value
+                    });
+                    var post_data = formdata;
+                    var onsuccess = function(data) {
+                        var response = JSON.parse(data);
+                        if (response != "") {
+                            if (response.type == 1) {
+                                paymentSuccess('success', response.result);
+                                viewtable();
+                            } else {
+                                paymentSuccess('error', response.result);
+                            }
+                        }
+                    }
+                    do_ajax_call(post_data, onsuccess, agenturl);
+                    // console.log(result.value);
+                    // paymentSuccess('success', 's');
+                } else {
+                    toast('error', 'Please Fill the Reason');
+                }
+            }
+        })
+    }
+    function paymentSuccess(icon, titlestr) {
+        Swal.fire({
+            title: titlestr,
+            icon: icon,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OKAY',
+            allowOutsideClick: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                viewtable();
+            }
+        })
+    }
+    function toast(icon, message) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+        Toast.fire({
+            icon: icon,
+            title: message
+        })
+    }
+    function agentdelete(id) {
+        swal.fire({
+            title: 'Delete Reason',
+            input: 'textarea',
+            showCancelButton: true,
+            allowOutsideClick: false
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                if (result.value != '') {
+                    var formdata = [];
+                    formdata.push({
+                        name: 'method',
+                        value: "deleted_agent"
+                    });
+                    formdata.push({
+                        name: 'userid',
+                        value: id
+                    });
+                    formdata.push({
+                        name: 'reason',
+                        value: result.value
+                    });
+                    var post_data = formdata;
+                    var onsuccess = function(data) {
+                        var response = JSON.parse(data);
+                        if (response != "") {
+                            if (response.type == 1) {
+                                paymentSuccess('success', response.result);
+                                viewtable();
+                            } else {
+                                paymentSuccess('error', response.result);
+                            }
+                        }
+                    }
+                    do_ajax_call(post_data, onsuccess, agenturl);
+                } else {
+                    toast('error', 'Please Fill the Reason');
+                }
+            }
+        })
+    }
+    function previewp(id) {
+        var formdata = [];
+        formdata.push({
+            name: 'method',
+            value: "show_image"
+        });
+        formdata.push({
+            name: 'id',
+            value: id
+        });
+        var post_data = formdata;
+        var onsuccess = function(data) {
+            var response = JSON.parse(data);
+            if (response != "") {
+                if (response.type == 1) {
+                    document.getElementById('imagecontent').innerHTML = response.result;
+                    $('#showimgmodal').modal('show');
+                }
+            }
+        }
+        do_ajax_call(post_data, onsuccess, url);
+    }
+    var telInput = $("#phone"),
+        errorMsg = $("#error-msg"),
+        validMsg = $("#valid-msg");
+    // initialise plugin
+    telInput.intlTelInput({
+        allowExtensions: true,
+        formatOnDisplay: true,
+        autoFormat: true,
+        autoHideDialCode: true,
+        autoPlaceholder: true,
+        defaultCountry: "auto",
+        ipinfoToken: "yolo",
+        nationalMode: false,
+        numberType: "MOBILE",
+        //onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
+        preferredCountries: ['ae', 'sa', 'qa', 'om', 'bh', 'kw', 'ma'],
+        preventInvalidNumbers: true,
+        separateDialCode: true,
+        initialCountry: "in",
+        geoIpLookup: function(callback) {
+            $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                var countryCode = resp && resp.country ? resp.country : "";
+                callback(countryCode);
+            });
+        },
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/11.0.9/js/utils.js"
+    });
+    var reset = function() {
+        telInput.removeClass("error");
+        errorMsg.addClass("hide");
+        validMsg.addClass("hide");
+    };
+    // on blur: validate
+    telInput.blur(function() {
+        reset();
+        if ($.trim(telInput.val())) {
+            if (telInput.intlTelInput("isValidNumber")) {
+                validMsg.removeClass("hide");
+            } else {
+                telInput.addClass("error");
+                errorMsg.removeClass("hide");
+            }
+        }
+    });
+    // on keyup / change flag: reset
+    telInput.on("keyup change", reset);
+    //# sourceURL=pen.js
+    // 		var iti = intlTelInput(input, {
+    //   initialCountry: "ae"
+    // });
+    function getCodeBoxElement(index) {
+        return document.getElementById('otp' + index);
+    }
+    function onKeyUpEvent(index, event) {
+        const eventCode = event.which || event.keyCode;
+        if (getCodeBoxElement(index).value.length === 1) {
+            if (index !== 4) {
+                getCodeBoxElement(index + 1).focus();
+            } else {
+                getCodeBoxElement(index).blur();
+                // Submit code
+                console.log('submit code ');
+            }
+        }
+        if (eventCode === 8 && index !== 1) {
+            getCodeBoxElement(index - 1).focus();
+        }
+    }
+    function onFocusEvent(index) {
+        for (item = 1; item < index; item++) {
+            if (window.CP.shouldStopExecution(0)) break;
+            const currentElement = getCodeBoxElement(item);
+            if (!currentElement.value) {
+                currentElement.focus();
+                break;
+            }
+        }
+        window.CP.exitedLoop(0);
+    }
+    function checkLength(el) {
+        if (el.value.length < 6) {
+            document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">length must be exactly 6 characters</div>';
+            // alert("length must be exactly 6 characters")
+        }
+    }
+    function validateEmail(email) {
+        var reg = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
+        if (reg.test(email)) {
+            return true;
+        }
+        return false;
+    }
+    // eye
+    $(document).on('click', '.toggle-password', function() {
+        let input = $('#password');
+        let icon = $(this).find('i');
+        if (input.attr('type') === 'password') {
+            input.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            input.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+    // $(".toggle-password").click(function() {
+    // 	$(this).toggleClass("fa-eye fa-eye-slash");
+    // 	var input = $($(this).attr("toggle"));
+    // 	if (input.attr("type") == "password") {
+    // 		input.attr("type", "text");
+    // 	} else {
+    // 		input.attr("type", "password");
+    // 	}
+    // });
+    // Eye end
+    function Email_check() {
+        let countrycode = $('.selected-dial-code').text();
+        let country = countrycode.substring(1);
+        let number = $.trim(telInput.val());
+        var test = number;
+        var trim_number = parseInt(test.charAt(0));
+        if (trim_number == 0) {
+            number = number.slice(1);
+        }
+        if (number != '') {
+            // 	if (country == 971 || country == 91 ) {
+            if (country == 971) {
+                let mobile = country + number;
+                var email = $('#email').val().trim();
+                let position = email.search('@nationaldrawuae.com');
+                if (email == '' || position >= 0) {
+                    document.getElementById('email').value = mobile + '@nationaldrawuae.com';
+                    document.getElementById('createformerror').innerHTML = '';
+                }
+            } else {
+                document.getElementById('email').value = '';
+                document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">Field Required - Email</div>';
+            }
+        } else {
+            document.getElementById('phone').value = '';
+            document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">Field Required - Mobile number</div>';
+        }
+    }
+    function getState(id) {
+        if (id != '') {
+            var formdata = [];
+            formdata.push({
+                name: 'method',
+                value: "getState"
+            });
+            formdata.push({
+                name: 'id',
+                value: id
+            });
+            var post_data = formdata;
+            var onsuccess = function(data) {
+                var response = JSON.parse(data);
+                if (response != "") {
+                    if (response.type == 1) {
+                        $('#billing_address').empty();
+                        let len = response.result.length;
+                        $('#billing_address').append(`<option value="">Select State / Emirates</option>`);
+                        for (let i = 0; i < len; i++) {
+                            optionText = response.result[i]['name'];
+                            optionValue = response.result[i]['id'];
+                            let svalue = (state.toLowerCase() == optionText.toLowerCase()) ? 'selected' : '';
+                            $('#billing_address').append(`<option value="${optionValue}" ${svalue}>${optionText}</option>`);
+                        }
+                        getCity($('#billing_address').val());
+                    } else {
+                        toast('error', response.result);
+                    }
+                    $('#billing_address').selectpicker('refresh');
+                }
+            }
+            do_ajax_call(post_data, onsuccess);
+        } else {
+            toast('error', 'Kindly Select Country')
+        }
+    }
+    function getCity(id) {
+        if (id != '') {
+            var formdata = [];
+            formdata.push({
+                name: 'method',
+                value: "getCity"
+            });
+            formdata.push({
+                name: 'id',
+                value: id
+            });
+            var post_data = formdata;
+            var onsuccess = function(data) {
+                var response = JSON.parse(data);
+                if (response != "") {
+                    if (response.type == 1) {
+                        $('#billing_city').empty();
+                        let len = response.result.length;
+                        $('#billing_city').append(`<option value="">Select Area / District</option>`);
+                        for (let i = 0; i < len; i++) {
+                            optionText = response.result[i]['name'];
+                            optionValue = response.result[i]['id'];
+                            let svalue = (city.toLowerCase() == optionText.toLowerCase()) ? 'selected' : '';
+                            $('#billing_city').append(`<option value="${optionValue}" ${svalue}>${optionText}</option>`);
+                        }
+                    } else {
+                        toast('error', response.result);
+                    }
+                    $('#billing_city').selectpicker('refresh');
+                }
+            }
+            do_ajax_call(post_data, onsuccess);
+        } else {
+            toast('error', 'Kindly Select State')
+        }
+    }
+    // Moblie Validation Added
+    function mobile_number_validation(mobilenumber) {
+        // alert('hellow');
+        var pattern = /[^0-9]/g;
+        $("#createformerror").html("");
+        if (mobilenumber != '') {
+            if (pattern.test(mobilenumber)) {
+                var res = mobilenumber.charAt(mobilenumber.length - 1);
+                document.getElementById('phone').value = '';
+                errorThrow('The Characters are Not Allowed');
+            } {
+                let firstChar = parseInt(mobilenumber.charAt(0));
+                if (firstChar != 0) {
+                    if (pattern.test(mobilenumber)) {
+                        var res = mobilenumber.charAt(mobilenumber.length - 1);
+                        errorThrow('The Characters are Not Allowed');
+                    } else {
+                        var count = country_Mobile_count(parseInt($('.selected-dial-code').text()));
+                        if (count != '') {
+                            if (mobilenumber.length < count) {} else {
+                                let len = parseInt(mobilenumber.length);
+                                $("#phone").attr("maxlength", count);
+                                $("#createformerror").html("");
+                            }
+                        } else {
+                            $("#phone").removeAttr("maxlength");
+                        }
+                    }
+                } else {
+                    document.getElementById('phone').value = '';
+                    errorThrow('Mobile Number Should Not Start With Zero');
+                }
+            }
+        } else {
+            errorThrow('Field Required - Enter Mobile');
+        }
+    }
+    function errorThrow(err) {
+        document.getElementById('createformerror').innerHTML = '<div class="alert alert-danger" role="alert">' + err + '</div>';
+    }
+    function country_Mobile_count(dialCode) {
+        var result = '';
+        if (dialCode == 971 || dialCode == 61 || dialCode == 966 || dialCode == 33 || dialCode == 61 || dialCode == 31) {
+            result = 9;
+        } else if (dialCode == 91 || dialCode == 63 || dialCode == 1 || dialCode == 44 || dialCode == 49 || dialCode == 81 || dialCode == 60) {
+            result = 10;
+        } else if (dialCode == 973 || dialCode == 65 || dialCode == 852 || dialCode == 965 || dialCode == 974 || dialCode == 968 || dialCode == 45) {
+            result = 8;
+        } else {
+            result = '';
+        }
+        return result;
+    }
+    telInput.on("countrychange", function() {
+        document.getElementById('phone').value = "";
+        $("#phone").removeAttr("maxlength");
+    });
+    // New
+    function affiliatedelete(id) {
+        swal.fire({
+            title: 'Delete Reason',
+            input: 'textarea',
+            showCancelButton: true,
+            allowOutsideClick: false
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                if (result.value == '') {
+                    toast('error', 'Please Fill the Reason');
+                    return false;
+                }
+                var formdata = [];
+                formdata.push({
+                    name: 'method',
+                    value: "deleted_affiliate"
+                }, {
+                    name: 'userid',
+                    value: id
+                }, {
+                    name: 'reason',
+                    value: result.value
+                });
+                var post_data = formdata;
+                var onsuccess = function(data) {
+                    var response = JSON.parse(data);
+                    if (response != "") {
+                        if (response.type == 1) {
+                            paymentSuccess('success', response.result);
+                            viewtable();
+                        } else {
+                            paymentSuccess('error', response.result);
+                        }
+                    }
+                }
+                do_ajax_call(post_data, onsuccess, window.location.origin + "/ajax/service/affiliate_services.php");
+            }
+        })
+    }
+    function suspendaffiliate(str) {
+        swal.fire({
+            title: 'Suspended Reason',
+            input: 'textarea',
+            showCancelButton: true,
+            allowOutsideClick: false
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                if (result.value == '') {
+                    toast('error', 'Please Fill the Reason');
+                    return false;
+                }
+                var formdata = [];
+                formdata.push({
+                    name: 'method',
+                    value: "suspended_affiliate"
+                }, {
+                    name: 'userid',
+                    value: str
+                }, {
+                    name: 'reason',
+                    value: result.value
+                });
+                var post_data = formdata;
+                var onsuccess = function(data) {
+                    var response = JSON.parse(data);
+                    if (response != "") {
+                        if (response.type == 1) {
+                            paymentSuccess('success', response.result);
+                            viewtable();
+                        } else {
+                            paymentSuccess('error', response.result);
+                        }
+                    }
+                }
+                do_ajax_call(post_data, onsuccess, window.location.origin + "/ajax/service/affiliate_services.php");
+            }
+        });
+    }
+    function unsuspendaffiliate(str) {
+        swal.fire({
+            title: 'Unsuspended Reason',
+            input: 'textarea',
+            showCancelButton: true,
+            allowOutsideClick: false
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                if (result.value == '') {
+                    toast('error', 'Please Fill the Reason');
+                    return false;
+                }
+                var formdata = [];
+                formdata.push({
+                    name: 'method',
+                    value: "unsuspendagent_affiliate"
+                }, {
+                    name: 'userid',
+                    value: str
+                }, {
+                    name: 'reason',
+                    value: result.value
+                });
+                var post_data = formdata;
+                var onsuccess = function(data) {
+                    var response = JSON.parse(data);
+                    if (response != "") {
+                        if (response.type == 1) {
+                            paymentSuccess('success', response.result);
+                            viewtable();
+                        } else {
+                            paymentSuccess('error', response.result);
+                        }
+                    }
+                }
+                do_ajax_call(post_data, onsuccess, window.location.origin + "/ajax/service/affiliate_services.php");
+            }
+        })
+    }
+    function generatePassword(length = 6) {
+        var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@!&*",
+            retVal = "";
+        for (var i = 0, n = charset.length; i < length; ++i) {
+            retVal += charset.charAt(Math.floor(Math.random() * n));
+        }
+        // return retVal;
+        $('#password').val(retVal);
+    }
+</script>

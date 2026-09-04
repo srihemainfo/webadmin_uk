@@ -1,0 +1,931 @@
+<?php
+$pageTitle = "Goride Jobs";
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+
+
+?> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<style>  
+    
+    .card-header.d-lg-flex.d-block.justify-content-between {
+        border-bottom: none;
+    }
+    .cursor-pointer {
+        cursor: pointer;
+        font-size: 1.2rem; /* Adjust size as needed */
+    }
+
+    input,
+    select {
+        border: 1px solid #CCC;
+        /* width: 250px; */
+    }
+
+    .nav.product-sale {
+        position: unset;
+        top: -3rem;
+        right: 5px;
+        margin: 12px 0;
+    }
+
+    input,
+    button {
+        height: 35px;
+        margin: 0;
+        padding: 6px 12px;
+        border-radius: 2px;
+        font-family: inherit;
+        font-size: 100%;
+        color: inherit;
+    }
+
+    .swal-modal {
+        border: 3px solid white;
+        color: #fff;
+    }
+
+    .swal-button {
+        background-color: #07f3a2 !important;
+    }
+
+    .swal-text {
+        font-weight: 600 !important;
+    }
+
+    .back-arrow-btn i {
+        background: #ffffff;
+        font-size: 16px;
+        padding: 2px 3px;
+        border-radius: 50px;
+        border: 2px solid #6c6e70;
+        color: #6c6e70;
+        margin-right: 15px;
+        width: 24px;
+        height: 24px;
+    }
+
+    .required-indicator {
+        color: red;
+        /* Change to the desired color */
+    }
+
+    .dt-column-order {
+        display: none;
+    }
+
+    table.dataTable th.dt-type-numeric,
+    table.dataTable th.dt-type-date,
+    table.dataTable td.dt-type-numeric,
+    table.dataTable td.dt-type-date {
+        text-align: left;
+    }
+
+    .form-control:disabled,
+    .form-control[readonly] {
+        background-color: rgb(255 255 255 / 10%);
+        /* opacity: 1; */
+    }
+
+    input,
+    select {
+        border: 1px solid #CCC;
+        /* width: 250px; */
+    }
+
+    .text {
+        float: unset !important;
+    }
+
+    .dropdown-item {
+        display: block;
+        width: 100%;
+        padding: 0.25rem 1rem;
+        clear: both;
+        font-weight: 400;
+        color: #121212 !important;
+        text-align: inherit;
+        text-decoration: none;
+        white-space: nowrap;
+        background-color: white;
+        border: 0;
+    }
+
+    input,
+    button {
+        height: 35px;
+        margin: 0;
+        padding: 6px 12px;
+        border-radius: 2px;
+        font-family: inherit;
+        font-size: 100%;
+        color: inherit;
+    }
+
+    .back-arrow-btn i {
+        background: #ffffff;
+        font-size: 16px;
+        padding: 2px 3px;
+        border-radius: 50px;
+        border: 2px solid #6c6e70;
+        color: #6c6e70;
+        margin-right: 15px;
+        width: 24px;
+        height: 24px;
+    }
+
+    .btn-light {
+        /* color: #495057; */
+        background-color: #ffffff !important;
+    }
+
+    .dropdown.bootstrap-select {
+        display: block !important;
+        width: 100% !important;
+    }
+    
+div:where(.swal2-container) {
+    z-index: 9999 !important;
+}
+
+div:where(.swal2-container) h2:where(.swal2-title) {
+    color: rgb(85 85 85) !important;
+}
+
+.clickable-bid-cell {
+    cursor: pointer;
+    color: #3200fa;
+    font-weight: 700;
+    text-align: center;
+}
+
+.clickable-place {
+    cursor: pointer;
+}
+    
+</style>
+<script>
+    window.onload = function () {
+        var page_origin = window.location.origin;
+        let anchor = document.getElementById("anchor");
+        anchor.href = page_origin;
+    }
+</script>
+
+<div class="main-content app-content mt-0">
+    <div class="side-app">
+        <input type="hidden" id="tabID" value="agents">
+        
+        <div class="main-container container-fluid mt-5 p-0">
+            
+            <div class="page-header pt-5">
+                <h1 class="page-title"><a href="javascript:void(0)" class="back-arrow-btn"><i class="fa fa-chevron-left"
+                            onclick="history.go(-1)" aria-hidden="true"></i></a><?= $pageTitle; ?></h1>
+                <div>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="" id="anchor">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?= $pageTitle; ?></li>
+                    </ol>
+                </div>
+            </div>
+            <!-- PAGE-HEADER END -->
+            <!-- ROW-1 -->
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
+                    <div class="card ">
+                        <div class="card-body">
+                            <div class="d-flex1">
+                                <div class="row mt-1">
+
+                                    <!-- Date -->
+                                    <div class="col-md-2">
+                                        <span>Date</span>
+                                        <input class="form-control" type="text" id="datefilterLogin"
+                                               name="datefilterLogin" placeholder="Select Date" value="" readonly />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span>Job No.</span>
+                                        <input class="form-control" type="text" id="job_no"
+                                               name="job_no" placeholder="Enter Job No" value="" />
+                                    </div>
+                                
+                                    <!-- Job Type -->
+                                    <div class="col-md-2">
+                                        <span>Job From</span>
+                                        <select id="jobFrom" class="form-control">
+                                            <!--<option value="">All Types</option>-->
+                                            <option value="customer">Website / Customer</option>
+                                            <option value="open">Driver</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-md-2">
+                                        <span>Job Type</span>
+                                        <select id="jobType" class="form-control">
+                                            <option value="">All Types</option>
+                                            <option value="oneway">One Way</option>
+                                            <option value="roundtrip">Round Trip</option>
+                                        </select>
+                                    </div>
+                                
+                                    <!-- Job Status (New Field) -->
+                                    <div class="col-md-2">
+                                        <span>Job Status</span>
+                                        <select id="jobStatus" class="form-control">
+                                            <option value="">All Status</option>
+                                            <option value="not_complete">Available Jobs</option>
+                                            <option value="bidding">Bidding</option>
+                                            <option value="accepted">Accepted</option>
+                                            <option value="cancelled">Cancelled</option>
+                                            <option value="expired">Expired</option>
+                                            <option value="deleted">Deleted Jobs</option>
+
+                                        </select>
+                                    </div>
+                                
+                                    <!-- Search Button -->
+                                    <div class="col-md-2">
+                                        <span class="d-block">&nbsp;</span>
+                                        <button class="btn btn-primary" onclick="jobList()">Search</button>
+                                    </div>
+                                
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-4" id="searcherr">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row row-sm">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body pt-4">
+                        <div class="grid-margin">
+                            <div class="panel panel-primary">
+                                <div class="tab-menu-heading border-0 p-0">
+                                    <div class="tabs-menu1">
+                                    </div>
+                                </div>
+                                <div class="panel-body tabs-menu-body border-0 pt-0">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab1">
+                                            <div class="card-header d-lg-flex d-block justify-content-between">
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered text-nowrap border-bottom"
+                                                    id="Participation_List" style="width:100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="column_sort sorting sorting_asc">Job ID</th>
+                                                            <th class="column_sort sorting sorting_asc">Status</th>
+                                                            <th class="column_sort sorting sorting_asc">Bid Count</th>
+                                                            <th class="column_sort sorting sorting_asc">Owner</th>
+                                                            <th class="column_sort sorting sorting_asc">Mobile No</th>
+                                                            <th class="column_sort sorting sorting_asc">Type</th>
+                                                            <th class="column_sort sorting sorting_asc">From</th>
+                                                            <th class="column_sort sorting sorting_asc">To</th>
+                                                            <th class="column_sort sorting sorting_asc">Pickup Date</th>
+                                                            <th class="column_sort sorting sorting_asc">Dropoff Date</th>
+                                                            <th class="column_sort sorting sorting_asc">Dis / PC</th>
+                                                            <th class="column_sort sorting sorting_asc">Fare</th>
+                                                            <th class="column_sort sorting sorting_asc">Created At</th>
+                                                            <th class="column_sort sorting sorting_asc">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ROW-4 END -->
+    </div>
+    <!-- CONTAINER END -->
+</div>
+
+<div class="modal fade" id="takeActionModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Take Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" id="job_id">
+                <input type="hidden" id="user_id">
+
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="job_action" value="confirm" id="confirmJob">
+                    <label class="form-check-label" for="confirmJob">
+                        Confirm the Job
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="job_action" value="delete" id="deleteJob">
+                    <label class="form-check-label" for="deleteJob">
+                        Delete the Job
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="submitJobAction">
+                    Submit
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="bid_modal">
+   <div class="modal-dialog modal-lg">
+      <div class="modal-content modal-content-demo">
+         <div class="modal-header">
+            <h6 class="modal-title">Bid Details</h6>
+            <button class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">×</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>SNO</th>
+                        <th>Bidder ID</th>
+                        <th>Amount</th>
+                        <th>Remark</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="bid_tbl">
+                    <tr>
+                        <td colspan="5" class="text-center">No Bids Found</td>
+                    </tr>
+                </tbody>
+            </table>
+         </div>
+      </div>
+   </div>
+</div>
+
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<script>
+  const quill = new Quill('#whatsapp_message', {
+    theme: 'snow'
+  });
+</script>
+
+// <script>
+//     tinymce.init({
+//         selector: '#whatsapp_message',
+//         menubar: false,
+//         plugins: 'lists link',
+//         toolbar: 'undo redo | bold italic underline | bullist numlist | link',
+//         height: 200
+//     });
+// </script>
+<script>
+
+    let origin = window.location.origin;
+
+    let mainDomain = window.location.hostname.split('.').slice(-2).join('.');
+    
+    $(document).on('click', '.take-action', function () {
+        $('#job_id').val($(this).data('id'));
+        $('#user_id').val($(this).data('user-id'));
+    
+        $('input[name="job_action"]').prop('checked', false);
+    
+        $('#takeActionModal').modal('show');
+    });
+    
+    $('#submitJobAction').on('click', function () {
+        
+        const $btn = $(this);
+
+        let jobId  = $('#job_id').val();
+        let userId = $('#user_id').val();
+        let action = $('input[name="job_action"]:checked').val();
+    
+        if (!action) {
+            alert('Please select an action');
+            return;
+        }
+        $btn.prop('disabled', true).text('Processing...');
+        $.ajax({
+            url: "<?= rtrim(TEST_API_DOMAIN_2, '/') ?>/job/action",
+            type: 'POST',
+            data: {
+                job_id: jobId,
+                user_id: userId,
+                action: action
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                $('#takeActionModal').modal('hide');
+                $('#jobsTable').DataTable().ajax.reload(null, false);
+            },
+            error: function () {
+                alert('Something went wrong');
+            },
+                complete: function () {
+                $btn.prop('disabled', false).text('Submit');
+            }
+        });
+    });
+
+
+
+    const createDatePicker = (id) => {
+        try {
+            const selector = `#${id}`;
+            const today = moment();
+            const sevenDaysAgo = moment().subtract(0, 'days');
+            $(selector).daterangepicker({
+                autoUpdateInput: true,
+                locale: {
+                    cancelLabel: 'Clear'
+                },
+                // minDate: sevenDaysAgo, 
+                maxDate: today,
+                opens: 'left',
+                startDate: sevenDaysAgo,
+                endDate: today,
+                // maxSpan: {
+                //     days: 30
+                // },
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 15 Days': [moment().subtract(14, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                    'This Year': [moment().startOf('year'), moment().endOf('year')],
+                    'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+                }
+            });
+            $(selector).on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+                // $(`#drawID`).val('');
+                // $(`#drawID`).val('').selectpicker('refresh');
+            });
+            $(selector).on('cancel.daterangepicker', function (ev, picker) {
+                $(this).val('');
+            });
+        } catch (e) {
+            console.log(`Error: ${e.message}`);
+        }
+    }
+    
+    const jobList = () => {
+        try {
+            let startDate = null;
+            let endDate = null;
+            var btn = $(`#searchBTN`);
+            var dateFilter = $('#datefilterLogin').val() ?? null;
+    
+            if (dateFilter != '' && dateFilter != null && dateFilter != undefined) {
+                startDate = moment($('#datefilterLogin').data('daterangepicker').startDate).format("YYYY-MM-DD");
+                endDate = moment($('#datefilterLogin').data('daterangepicker').endDate).format("YYYY-MM-DD");
+            }
+    
+            var table = $('#Participation_List').DataTable({
+                destroy: true,
+                pageLength: 10,
+                order: [],
+                paging: true,
+                searching: true,
+                info: true,
+                ajax: {
+                    url: "<?= rtrim(TEST_API_DOMAIN_2, '/') ?>/admin-job-list",
+                    method: "POST",
+                    dataSrc: "result",
+    
+                    headers: {
+                        "Authorization": "Bearer asdfghjklpoiuytrewqzxcvbnm!@$%^&*()",
+                        "Accept": "application/json"
+                    },
+    
+                    data: function (d) {
+                        const datePicker = $('#datefilterLogin').data('daterangepicker');
+                        const hasDate = $('#datefilterLogin').val()?.trim() !== '';
+    
+                        d.method = "jobList_New";
+                        d.jobType = $("#jobType").val();
+                        d.job_no = $("#job_no").val();
+                        d.jobStatus = $("#jobStatus").val();
+                        d.dateFilter = hasDate ? 1 : '';
+                        d.jobFrom = $("#jobFrom").val();
+                        if (hasDate && datePicker) {
+                            d.startDate = datePicker.startDate.format("YYYY-MM-DD");
+                            d.endDate = datePicker.endDate.format("YYYY-MM-DD");
+                        }
+                    },
+                    beforeSend: function () {
+                        btn.html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Loading...`)
+                           .prop('disabled', true);
+                    },
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    'pageLength',
+                    'copy',
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Go Ride Leads'
+                    },
+                ],
+                columns: [
+                    {
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            return data?.job_no || ''
+                        }
+                    },
+                    {
+                        data: null,
+                        render: (d) =>
+                            d?.deletes === '1'
+                                ? 'Deleted'
+                                : ((['created', 'bidding'].includes(d?.job_status) &&
+                                    d?.pickup_date &&
+                                    new Date(d.pickup_date) < new Date())
+                                    ? 'Expiried'
+                                    : (d?.job_status ?? ''))
+                    },
+    
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            if (cellData?.bid_count && cellData.bid_count > 0) {
+                                $(td)
+                                    .addClass('clickable-bid-cell bid-cell')
+                                    .attr('data-id', rowData.id)
+                                    .html(cellData.bid_count);
+                            } else {
+                                $(td).text('0').addClass('text-center bid-cell').attr('data-id', rowData.id);
+                            }
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            if (!data?.name) return '';
+    
+                            return `
+                               <a href="https://console.goride.run/kyc-verify/verify/${data.user_id}/${data.kd_id}"
+                                class="text-decoration"
+                                target="_blank"
+                                rel="noopener noreferrer">
+                                    ${data.name} (${data.type})
+                                </a>
+                            `;
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            return data?.mobile || '';
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            return data?.job_type || '';
+                        }
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            const place = cellData?.from_place || '';
+                            const truncated = place.length > 15 ? place.substring(0, 15) + '...' : place;
+    
+                            $(td)
+                                .addClass('clickable-place')
+                                .attr('title', place)
+                                .css('cursor', 'pointer')
+                                .html(truncated);
+                        }
+                    },
+                    {
+                        data: null,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            const place = cellData?.to_place || '';
+                            const truncated = place.length > 15 ? place.substring(0, 15) + '...' : place;
+    
+                            $(td)
+                                .addClass('clickable-place')
+                                .attr('title', place)
+                                .css('cursor', 'pointer')
+                                .html(truncated);
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            return data?.pickup_date || '';
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            return data?.dropoff_date || '';
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            return (data?.distance != null ? data.distance + ' KM' : '') +
+                                   (data?.pass_count != null ? ' / ' + data.pass_count : '');
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            return data?.fare || '';
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            return data?.created_at || '';
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            let icons = '';
+                            if (data?.job_status !== 'cancelled') {
+                                icons += `
+                                    <i class="fas fa-xmark text-primary fa-2x me-2 cursor-pointer cancel-job" 
+                                       data-id="${row.id}" data-jobno="${row.job_no}" data-jobtype="${row.global_type}" data-userid="${row.user_id}" title="Cancel Job"></i>
+                                `;
+                            }
+                            icons += `
+                                <i class="fas fa-trash text-danger fa-2x me-2 cursor-pointer delete-job" 
+                                   data-id="${row.id}" data-jobno="${row.job_no}" data-userid="${row.user_id}" title="Delete Job"></i>
+                            `;
+                            if (data?.job_status == 'created' && data?.confirm_status == 0) {
+                                icons += `
+                                    <i class="fas fa-check-circle text-success fa-2x me-2 cursor-pointer take-action"
+                                       data-id="${row.id}"
+                                       data-user-id="${row.user_id}"
+                                       data-from-place="${row.from_place}"
+                                       title="Take Action"></i>
+                                `;
+                            }
+    
+                            return icons;
+                        }
+                    }
+                ],
+                initComplete: function (settings, json) {
+                    btn.html(`GO`).prop('disabled', false);
+                },
+            });
+        } catch (e) {
+            console.log(`Error: ${e.message}`);
+        }
+    }
+
+    
+    $("#btnSearch").on("click", function () {
+        $("#Participation_List").DataTable().ajax.reload();
+    });
+    
+    $("#searchTxt").on("keypress", function (e) {
+        if (e.which === 13) {
+            $("#Participation_List").DataTable().ajax.reload();
+        }
+    });
+    
+    // $(document).on('click', '.clickable-bid-cell', function () {
+    //     const id = $(this).data('id');
+        
+    //     window.open('/job-bidding?job_id=' + id, '_blank');
+    //     // showBidDetails(id, this);
+    // });
+    
+    $(document).on('click', '.bid-cell', function () {
+        const id = $(this).data('id');
+        
+        window.open('/job-bidding?job_id=' + id, '_blank');
+        // showBidDetails(id, this);
+    });
+    
+    
+    $(document).on("click", ".cancel-job", function () {
+        let jobId = $(this).data("id");
+        let userid = $(this).data("userid");
+        let jobno = $(this).data("jobno");
+        let jobtype = $(this).data("jobtype");
+        if (!jobId) return;
+    
+        if (!confirm("Are you sure you want to cancel this job?")) return;
+    
+        $.ajax({
+            url: origin + "/ajax/service/jobServices.php",
+            method: "POST",
+            dataType: "json",
+            data: {
+                method: "cancelJob",
+                job_id: jobId,
+                user_id: userid,
+                jobtype: jobtype,
+                job_no: jobno
+            },
+            success: function (res) {
+                if (res.type === 1) {
+                    toast('success', res.msg);
+                    $("#Participation_List").DataTable().ajax.reload(null, false);
+                } else {
+                    toast('error', res.msg);
+                }
+            },
+            error: function () {
+                toast('error', 'Something went wrong while cancelling job.');
+            }
+        });
+    });
+    
+    $(document).on("click", ".delete-job", function () {
+        let jobId = $(this).data("id");
+        let userid = $(this).data("userid");
+        let jobno = $(this).data("jobno");
+        if (!jobId) return;
+    
+        if (!confirm("Are you sure you want to delete this job?")) return;
+    
+        $.ajax({
+            url: origin + "/ajax/service/jobServices.php",
+            method: "POST",
+            dataType: "json",
+            data: {
+                method: "deleteJob",
+                job_id: jobId,
+                user_id: userid,
+                job_no: jobno
+            },
+            success: function (res) {
+                if (res.type === 1) {
+                    toast('success', res.msg);
+                    $("#Participation_List").DataTable().ajax.reload(null, false);
+                } else {
+                    toast('error', res.msg);
+                }
+            },
+            error: function () {
+                toast('error', 'Something went wrong while cancelling job.');
+            }
+        });
+    });
+
+    function showBidDetails(jobId, btn) {
+        $(btn).prop('disabled', true);
+    
+        $.ajax({
+            url: origin + "/ajax/service/jobServices.php",
+            method: "POST",
+            dataType: "json",
+            data: {
+                method: "bid_details",
+                job_id: jobId
+            },
+            success: function(response) {
+                let rows = "";
+                if (response.type === 1 && response.result) {
+                    let index = 1;
+                    for (const [bidderId, bid] of Object.entries(response.result)) {
+                        rows += `
+                            <tr>
+                                <td>${index++}</td>
+                                <td>
+                                  <a href="https://console.goride.run/kyc-verify/verify/${bid.user_id}/${bid.kd_id}"
+                                    target="_blank" class="text-decoration-none text-primary">
+                                    ${bid.name}
+                                </td>
+                                <td>${bid.amount}</td>
+                                <td>${bid.remark ? bid.remark : "-"}</td>
+                                <td>${bid.status}</td>
+                            </tr>
+                        `;
+                    }
+                } else {
+                    rows = `<tr><td colspan="5" class="text-center">No Bids Found</td></tr>`;
+                }
+                $("#bid_tbl").html(rows);
+                $("#bid_modal").modal("show");
+            },
+            error: function(xhr) {
+                $("#bid_tbl").html(`<tr><td colspan="5" class="text-center">Error loading bids</td></tr>`);
+                $("#bid_modal").modal("show");
+            },
+            complete: function() {
+                $(btn).prop('disabled', false);
+            }
+        });
+    }
+    
+    $(function () {
+        try {
+            createDatePicker('datefilterLogin');
+            $('#datefilterLogin').trigger('cancel.daterangepicker');
+            
+            var isNotComplete = getCookie("isNoComplete");
+            var isExpired = getCookie("isExpired");
+            var isCancelled = getCookie("isCancelled");
+    
+            if (isNotComplete == "true") {
+        
+                const start = moment().startOf('year');
+                const end = moment().endOf('year');
+        
+                $("#datefilterLogin").data('daterangepicker').setStartDate(start);
+                $("#datefilterLogin").data('daterangepicker').setEndDate(end);
+        
+                $("#datefilterLogin").val(
+                    start.format('DD/MM/YYYY') + " - " + end.format('DD/MM/YYYY')
+                );
+        
+                $("#jobStatus").prop("selectedIndex", 1).trigger("change");
+        
+            }
+            
+            if (isExpired == "true") {
+        
+                const start = moment().startOf('year');
+                const end = moment().endOf('year');
+        
+                $("#datefilterLogin").data('daterangepicker').setStartDate(start);
+                $("#datefilterLogin").data('daterangepicker').setEndDate(end);
+        
+                $("#datefilterLogin").val(
+                    start.format('DD/MM/YYYY') + " - " + end.format('DD/MM/YYYY')
+                );
+        
+                $("#jobStatus").prop("selectedIndex", 4).trigger("change");
+        
+            }
+            
+            if (isCancelled == "true") {
+        
+                const start = moment().startOf('year');
+                const end = moment().endOf('year');
+        
+                $("#datefilterLogin").data('daterangepicker').setStartDate(start);
+                $("#datefilterLogin").data('daterangepicker').setEndDate(end);
+        
+                $("#datefilterLogin").val(
+                    start.format('DD/MM/YYYY') + " - " + end.format('DD/MM/YYYY')
+                );
+        
+                $("#jobStatus").prop("selectedIndex", 5).trigger("change");
+        
+            }
+            
+            
+            jobList();
+        } catch (e) {
+            console.log(`Error: ${e.message}`);
+        }
+    });
+    
+    function toast(icon, message) {
+       	const Toast = Swal.mixin({
+       		toast: true,
+       		position: 'top-end',
+       		showConfirmButton: false,
+       		timer: 5000,
+       		timerProgressBar: true,
+       		didOpen: (toast) => {
+       			toast.addEventListener('mouseenter', Swal.stopTimer)
+       			toast.addEventListener('mouseleave', Swal.resumeTimer)
+       		}
+       	})
+       	Toast.fire({
+       		icon: icon,
+       		title: message
+       	})
+    }
+    
+</script>
