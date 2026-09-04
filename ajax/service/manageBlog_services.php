@@ -150,6 +150,14 @@ else if ($method === 'delete_category') {
     ];
 
     if ($result_data && mysqli_affected_rows($con) > 0) {
+        // Remove from sitemap when deleted
+        $bQuery = mysqli_query($con, "SELECT b.slug, c.cat_url FROM blogs_content b LEFT JOIN categories c ON c.id = b.category_id WHERE b.id = '$blog_id'");
+        if ($bQuery && $bRow = mysqli_fetch_assoc($bQuery)) {
+            require_once __DIR__ . '/sitemapservice.php';
+            $sitemapService = new SitemapService();
+            $sitemapService->removeBlog($bRow['slug'], $bRow['cat_url']);
+        }
+
         $response["type"]   = 1;
         $response["result"] = "Deleted successfully";
     } else {
@@ -191,11 +199,20 @@ else if ($method === 'update_status') {
     ];
 
     if ($result_data && mysqli_affected_rows($con) > 0) {
+        if ($status == 0) {
+            $bQuery = mysqli_query($con, "SELECT b.slug, c.cat_url FROM blogs_content b LEFT JOIN categories c ON c.id = b.category_id WHERE b.id = '$category_id'");
+            if ($bQuery && $bRow = mysqli_fetch_assoc($bQuery)) {
+                require_once __DIR__ . '/sitemapservice.php';
+                $sitemapService = new SitemapService();
+                $sitemapService->removeBlog($bRow['slug'], $bRow['cat_url']);
+            }
+        }
+
         $response["type"]   = 1;
-        $response["result"] = "Deleted successfully";
+        $response["result"] = "Status updated successfully";
     } else {
         $response["type"]   = 0;
-        $response["result"] = "Deleted failed";
+        $response["result"] = "Status update failed";
     }
     
     echo json_encode($response);
@@ -503,6 +520,13 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $labelData = [];
 
     if ($action === 'edit_blog' && $method === 'edit_content') {
+        $oldSlug = '';
+        $oldCatUrl = '';
+        $oldQuery = mysqli_query($con, "SELECT b.slug, c.cat_url FROM blogs_content b LEFT JOIN categories c ON c.id = b.category_id WHERE b.id = '$blog_id'");
+        if ($oldQuery && $oldRow = mysqli_fetch_assoc($oldQuery)) {
+            $oldSlug = $oldRow['slug'];
+            $oldCatUrl = $oldRow['cat_url'];
+        }
 
     // 1. Use ? placeholders instead of direct variables
     $updateQuery = "
@@ -551,6 +575,35 @@ else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // 4. Execute the query
         if ($stmt->execute()) {
+            $sitemap_needed = isset($_POST['sitemap_needed']) && ($_POST['sitemap_needed'] == '1' || $_POST['sitemap_needed'] === 'on') ? 1 : 0;
+
+            $catUrl = '';
+            if (!empty($category_id)) {
+                $catQ = mysqli_query($con, "SELECT cat_url FROM categories WHERE id = " . intval($category_id));
+                if ($catQ && $catRow = mysqli_fetch_assoc($catQ)) {
+                    $catUrl = $catRow['cat_url'];
+                }
+            }
+
+            require_once __DIR__ . '/sitemapservice.php';
+            $sitemapService = new SitemapService();
+
+            try {
+                if ($sitemap_needed == 1) {
+                    if (!empty($oldSlug) && $oldSlug !== $slug) {
+                        $sitemapService->removeBlog($oldSlug, $oldCatUrl);
+                    }
+                    $sitemapService->addBlog($slug, $catUrl, date('Y-m-d'));
+                } else {
+                    $sitemapService->removeBlog($slug, $catUrl);
+                    if (!empty($oldSlug) && $oldSlug !== $slug) {
+                        $sitemapService->removeBlog($oldSlug, $oldCatUrl);
+                    }
+                }
+            } catch (Exception $e) {
+                error_log('Sitemap error in edit blog: ' . $e->getMessage());
+            }
+
             echo json_encode([
                 'type' => 1,
                 'result' => 'Content updated successfully'

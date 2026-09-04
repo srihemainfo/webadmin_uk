@@ -238,8 +238,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $labelJson = !empty($labelData) ? json_encode($labelData, JSON_UNESCAPED_UNICODE) : null;
 
     if ($action === 'create_blog' && $method === 'blogs_content') {
-
-
         $checkQuery = "SELECT id FROM blogs_content WHERE slug = '$slug'";
        
         $checkResult = $con->query($checkQuery);
@@ -291,9 +289,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $faqJson
             );
 
-
-
             if ($stmt->execute()) {
+                $sitemap_needed = isset($_POST['sitemap_needed']) && ($_POST['sitemap_needed'] == '1' || $_POST['sitemap_needed'] === 'on') ? 1 : 0;
+
+                $catUrl = '';
+                if (!empty($category_id)) {
+                    $catQ = mysqli_query($con, "SELECT cat_url FROM categories WHERE id = " . intval($category_id));
+                    if ($catQ && $catRow = mysqli_fetch_assoc($catQ)) {
+                        $catUrl = $catRow['cat_url'];
+                    }
+                }
+
+                require_once __DIR__ . '/sitemapservice.php';
+                $sitemapService = new SitemapService();
+
+                try {
+                    if ($sitemap_needed == 1) {
+                        $sitemapService->addBlog($slug, $catUrl, date('Y-m-d'));
+                    } else {
+                        $sitemapService->removeBlog($slug, $catUrl);
+                    }
+                } catch (Exception $e) {
+                    error_log('Sitemap error in create blog: ' . $e->getMessage());
+                }
+
                 echo json_encode([
                     'type' => 1,
                     'result' => 'Content created successfully'

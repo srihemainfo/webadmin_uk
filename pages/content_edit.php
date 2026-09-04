@@ -277,6 +277,15 @@ if (!empty($row['content'])) {
                                     <input type="text" class="form-control" name="meta_keywords" value ="<?=$row['meta_keywords']?>"
                                            placeholder="Electric, Future, EV">
                                 </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check form-switch pt-2">
+                                        <input class="form-check-input" type="checkbox" name="sitemap_needed" value="1" id="sitemap_needed" checked style="cursor: pointer; width: 2.2em; height: 1.2em;">
+                                        <label class="form-check-label fw-semibold text-dark ms-2" for="sitemap_needed" style="cursor: pointer;">
+                                            <i class="fa fa-sitemap text-primary me-1"></i> Add this blog to sitemap (sitemap-blog.xml)
+                                        </label>
+                                    </div>
+                                </div>
                 
                             </div>
                         </div>
@@ -615,7 +624,11 @@ $(document).ready(function () {
             if (this.type === "file") return;
     
             if (this.name) {
-                formData.append(this.name, $(this).val());
+                if (this.type === "checkbox") {
+                    formData.append(this.name, this.checked ? "1" : "0");
+                } else {
+                    formData.append(this.name, $(this).val());
+                }
             }
         });
     
