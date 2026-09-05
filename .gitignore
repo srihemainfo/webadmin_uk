@@ -24,3 +24,7 @@ livereadonlydb/
 *.txt
 error_log*
 *.ini
+.vscode/
+sftp.json
+
+sync_webadmin.js
