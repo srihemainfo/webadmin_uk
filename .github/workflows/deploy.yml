@@ -24,7 +24,7 @@ jobs:
           script: |
             set -e
 
-            cd /home/londonserver/webadmin.goride.run
+            cd /home2/airportrides/webadmin.goride.run
 
             echo "=== Deployment started at $(date) ==="
 
