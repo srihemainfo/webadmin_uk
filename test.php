@@ -10,7 +10,7 @@
 //     $draw_id = $value['draw_id'];
 //     echo 'Transaction ID: ' . $transid . '<br>';
 
-
+//initial commit
 //     $payment_history = select_query($con, "payment_history", "id", "`transaction_id` = '$transid' and `draw_id` = '0' ORDER BY `id` DESC LIMIT 1", "", "");
 //     if ($payment_history['nr'] > 0) {
 
