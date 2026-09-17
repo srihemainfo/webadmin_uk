@@ -29,7 +29,7 @@ $recordsTotal = mysqli_fetch_assoc($totalResult)['total'] ?? 0;
 // Apply Search Filter from DataTable (if user pressed Enter)
 $searchCondition = "";
 if (!empty($searchValue)) {
-    $searchCondition = " AND (c.name LIKE '%$searchValue%' OR c.mobile LIKE '%$searchValue%' OR l.from_place LIKE '%$searchValue%' OR l.to_place LIKE '%$searchValue%') ";
+    $searchCondition = " AND (c.name LIKE '%$searchValue%' OR c.mobile LIKE '%$searchValue%' OR l.from_place LIKE '%$searchValue%' OR l.to_place LIKE '%$searchValue%' OR l.from_city LIKE '%$searchValue%' OR l.to_city LIKE '%$searchValue%') ";
 }
 
 // 2. Get Filtered Records Count
@@ -44,6 +44,8 @@ $query = "
         c.mobile as customer_mobile,
         l.from_place,
         l.to_place,
+        l.from_city,
+        l.to_city,
         l.created_at
     FROM `user_activity_log` l
     LEFT JOIN `customer_register` c ON l.user_id = c.id
@@ -58,11 +60,20 @@ $data = [];
 if ($result) {
     $sno = $start + 1; // Accurate serial number calculation based on page offset
     while ($row = mysqli_fetch_assoc($result)) {
+        $fromCityBadge = !empty($row['from_city']) 
+            ? '<span class="badge bg-primary text-white px-2 py-1">' . htmlspecialchars($row['from_city']) . '</span>' 
+            : '<span class="text-muted">-</span>';
+        $toCityBadge = !empty($row['to_city']) 
+            ? '<span class="badge bg-success text-white px-2 py-1">' . htmlspecialchars($row['to_city']) . '</span>' 
+            : '<span class="text-muted">-</span>';
+
         $data[] = [
             "sno" => $sno++,
             "name" => '<span class="fw-semibold text-dark">' . (!empty($row['customer_name']) ? htmlspecialchars($row['customer_name']) : '<span class="text-muted">Guest / Unknown</span>') . '</span>',
             "mobile" => !empty($row['customer_mobile']) ? htmlspecialchars($row['customer_mobile']) : '-',
+            "from_city" => $fromCityBadge,
             "from_loc" => '<small class="text-muted">' . (!empty($row['from_place']) ? htmlspecialchars($row['from_place']) : '-') . '</small>',
+            "to_city" => $toCityBadge,
             "to_loc" => '<small class="text-muted">' . (!empty($row['to_place']) ? htmlspecialchars($row['to_place']) : '-') . '</small>',
             "date" => '<span class="text-nowrap">' . date("d M Y, h:i:s A", strtotime($row['created_at'])) . '</span>'
         ];

@@ -23,26 +23,28 @@ if (isset($_POST['method']) && $_POST['method'] === 'get_district_reports') {
     if ($searchType === 'From') {
         $baseQuery = "
             SELECT 
-                from_district AS district_name, 
+                COALESCE(NULLIF(TRIM(from_city), ''), NULLIF(TRIM(from_district), '')) AS district_name, 
                 COUNT(id) AS search_count
             FROM `user_activity_log` 
-            WHERE from_district IS NOT NULL 
-              AND TRIM(from_district) != '' 
-              AND LOWER(from_district) != 'null'
-              $dateFilter
-            GROUP BY from_district
+            WHERE (
+                (from_city IS NOT NULL AND TRIM(from_city) != '' AND LOWER(from_city) != 'null')
+                OR (from_district IS NOT NULL AND TRIM(from_district) != '' AND LOWER(from_district) != 'null')
+            )
+            $dateFilter
+            GROUP BY district_name
         ";
     } else {
         $baseQuery = "
             SELECT 
-                to_district AS district_name, 
+                COALESCE(NULLIF(TRIM(to_city), ''), NULLIF(TRIM(to_district), '')) AS district_name, 
                 COUNT(id) AS search_count
             FROM `user_activity_log` 
-            WHERE to_district IS NOT NULL 
-              AND TRIM(to_district) != '' 
-              AND LOWER(to_district) != 'null'
-              $dateFilter
-            GROUP BY to_district
+            WHERE (
+                (to_city IS NOT NULL AND TRIM(to_city) != '' AND LOWER(to_city) != 'null')
+                OR (to_district IS NOT NULL AND TRIM(to_district) != '' AND LOWER(to_district) != 'null')
+            )
+            $dateFilter
+            GROUP BY district_name
         ";
     }
 
@@ -112,7 +114,9 @@ if (isset($_POST['method']) && $_POST['method'] === 'get_district_report_details
     $startDate = mysqli_real_escape_string($con, $_POST['startDate'] ?? '');
     $endDate = mysqli_real_escape_string($con, $_POST['endDate'] ?? '');
 
-    $whereClause = ($search_type === 'From') ? " WHERE l.from_district = '$district_name' " : " WHERE l.to_district = '$district_name' ";
+    $whereClause = ($search_type === 'From') 
+        ? " WHERE (l.from_city = '$district_name' OR l.from_district = '$district_name') " 
+        : " WHERE (l.to_city = '$district_name' OR l.to_district = '$district_name') ";
 
     if (!empty($startDate) && !empty($endDate)) {
         $whereClause .= " AND l.created_at >= '{$startDate} 00:00:00' AND l.created_at <= '{$endDate} 23:59:59' ";

@@ -134,8 +134,10 @@ $isAdmin = ($memid == 1);
                                     <th class="text-center" style="width: 50px;">S.NO</th>
                                     <th>CUSTOMER NAME</th>
                                     <th>MOBILE</th>
-                                    <th style="width: 25%;">FROM PLACE</th>
-                                    <th style="width: 25%;">TO PLACE</th>
+                                    <th>FROM CITY</th>
+                                    <th style="width: 22%;">FROM PLACE</th>
+                                    <th>TO CITY</th>
+                                    <th style="width: 22%;">TO PLACE</th>
                                     <th>DATE & TIME</th>
                                 </tr>
                             </thead>
@@ -307,7 +309,19 @@ $(document).ready(function() {
             },
 
             {
+                data: "from_city",
+                className: "text-center",
+                orderable: false
+            },
+
+            {
                 data: "from_loc",
+                orderable: false
+            },
+
+            {
+                data: "to_city",
+                className: "text-center",
                 orderable: false
             },
 
