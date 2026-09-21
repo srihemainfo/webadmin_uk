@@ -111,6 +111,54 @@ $pageTitle = "Dynamic Pages";
         background: #e2e8f0;
     }
 
+    /* Schema Action Buttons */
+    .btn-schema-action {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 5px 14px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+        line-height: 1.4;
+    }
+
+    .btn-schema-action:active {
+        transform: translateY(0) !important;
+    }
+
+    .btn-schema-format {
+        background-color: #ffffff;
+        color: #0891b2;
+        border: 1px solid #06b6d4;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .btn-schema-format:hover {
+        background-color: #06b6d4;
+        color: #ffffff;
+        border-color: #06b6d4;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba(6, 182, 212, 0.25);
+    }
+
+    .btn-schema-validate {
+        background-color: #0d6efd;
+        color: #ffffff;
+        border: 1px solid #0d6efd;
+        box-shadow: 0 1px 3px rgba(13, 110, 253, 0.25);
+    }
+
+    .btn-schema-validate:hover {
+        background-color: #0b5ed7;
+        color: #ffffff;
+        border-color: #0a58ca;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(13, 110, 253, 0.35);
+    }
+
     /* Sticky Editor Header & Tabs */
     .sticky-editor-header {
         position: -webkit-sticky;
@@ -485,21 +533,21 @@ $pageTitle = "Dynamic Pages";
 
                                     <div class="col-12">
                                         <div
-                                            class="d-flex justify-content-between align-items-center mb-1 flex-wrap gap-2">
-                                            <label class="form-label fw-bold mb-0">
+                                            class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                                            <label class="form-label fw-bold mb-0 text-dark">
                                                 <i class="fa fa-code text-primary me-1"></i> Schema Markup / Structured
                                                 Data Scripts (JSON-LD)
                                             </label>
                                             <div class="d-flex align-items-center gap-2">
-                                                <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2"
-                                                    id="btnBeautifySchema" title="Format and indent JSON-LD scripts"
-                                                    style="font-size: 11px;">
-                                                    <i class="fa fa-align-left me-1"></i> Format / Beautify
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-info fw-semibold px-3 py-1 shadow-sm d-inline-flex align-items-center btn-schema-action btn-schema-format"
+                                                    id="btnBeautifySchema" title="Format & Beautify JSON-LD scripts">
+                                                    <i class="fa fa-magic me-1"></i> Format / Beautify
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2"
-                                                    id="btnValidateSchemaManual" title="Validate all schema scripts"
-                                                    style="font-size: 11px;">
-                                                    <i class="fa fa-check-circle me-1"></i> Check & Validate
+                                                <button type="button"
+                                                    class="btn btn-sm btn-primary fw-semibold px-3 py-1 text-white shadow-sm d-inline-flex align-items-center btn-schema-action btn-schema-validate"
+                                                    id="btnValidateSchemaManual" title="Validate all schema scripts">
+                                                    <i class="fa fa-check me-1"></i> Check & Validate
                                                 </button>
                                             </div>
                                         </div>
