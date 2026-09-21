@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 header('Content-Type: application/json; charset=utf-8');
 
 include '../../include/shi-config.php';
@@ -49,6 +49,60 @@ function uploadFileToS3($tmpPath, $mimeType, $originalName, $slug = 'page') {
     return null;
 }
 
+function ensureSchemaColumnExists($con) {
+    static $ensured = false;
+    if ($ensured) return;
+    $ensured = true;
+
+    $res = $con->query("SHOW COLUMNS FROM dynamic_pages LIKE 'schema_markup'");
+    if ($res && $res->num_rows === 0) {
+        @$con->query("ALTER TABLE dynamic_pages ADD COLUMN schema_markup LONGTEXT NULL AFTER meta_keywords");
+    }
+}
+
+function validateBackendSchema($input) {
+    $trimmed = trim($input);
+    if ($trimmed === '') {
+        return ['valid' => true];
+    }
+
+    // Check if input contains <script> tags
+    if (stripos($trimmed, '<script') !== false) {
+        $openCount = preg_match_all('/<script\b/i', $trimmed);
+        $closeCount = preg_match_all('/<\/script>/i', $trimmed);
+        if ($openCount > $closeCount) {
+            return ['valid' => false, 'error' => "Unclosed <script> tag detected. Found $openCount opening tag(s) but only $closeCount closing tag(s)."];
+        }
+
+        preg_match_all('/<script\b([^>]*)>(.*?)<\/script>/is', $trimmed, $matches, PREG_SET_ORDER);
+        if (empty($matches)) {
+            return ['valid' => false, 'error' => "No valid <script>...</script> blocks found."];
+        }
+
+        foreach ($matches as $idx => $m) {
+            $blockNum = $idx + 1;
+            $content = trim($m[2]);
+            if ($content === '') {
+                return ['valid' => false, 'error' => "Schema Script Block #$blockNum is empty."];
+            }
+            // Strip HTML comments if present
+            $cleaned = preg_replace('/^<!--|-->$/', '', $content);
+            $decoded = json_decode(trim($cleaned), true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return ['valid' => false, 'error' => "Schema Script Block #$blockNum contains invalid JSON: " . json_last_error_msg()];
+            }
+        }
+        return ['valid' => true];
+    } else {
+        // Raw JSON string
+        $decoded = json_decode($trimmed, true);
+        if (json_last_error() === JSON_ERROR_NONE) {
+            return ['valid' => true];
+        }
+        return ['valid' => false, 'error' => "Invalid JSON schema syntax: " . json_last_error_msg()];
+    }
+}
+
 try {
     // 1. LIST ALL PAGES
     if ($action === 'list') {
@@ -76,7 +130,9 @@ try {
             exit;
         }
 
-        $stmt = $con->prepare("SELECT id, page_title, slug, page_type, is_published, is_sitemap, seo_title, meta_description, meta_keywords, sections, created_at, updated_at FROM dynamic_pages WHERE id = ?");
+        ensureSchemaColumnExists($con);
+
+        $stmt = $con->prepare("SELECT id, page_title, slug, page_type, is_published, is_sitemap, seo_title, meta_description, meta_keywords, schema_markup, sections, created_at, updated_at FROM dynamic_pages WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -87,6 +143,7 @@ try {
             exit;
         }
 
+        $page['schema_markup'] = $page['schema_markup'] ?? '';
         $page['sections'] = !empty($page['sections']) ? json_decode($page['sections'], true) : [];
         echo json_encode(['status' => 'success', 'success' => true, 'data' => $page]);
         exit;
@@ -126,11 +183,24 @@ try {
         $seo_title = trim($_POST['seo_title'] ?? '');
         $meta_description = trim($_POST['meta_description'] ?? '');
         $meta_keywords = trim($_POST['meta_keywords'] ?? '');
+        $schema_markup = trim($_POST['schema_markup'] ?? '');
 
         if (empty($page_title)) {
             echo json_encode(['status' => 'error', 'success' => false, 'message' => 'Page Title is required']);
             exit;
         }
+
+        // Validate schema markup if provided
+        if ($schema_markup !== '') {
+            $schemaCheck = validateBackendSchema($schema_markup);
+            if (!$schemaCheck['valid']) {
+                echo json_encode(['status' => 'error', 'success' => false, 'message' => $schemaCheck['error']]);
+                exit;
+            }
+        }
+
+        // Ensure schema_markup column exists in dynamic_pages table
+        ensureSchemaColumnExists($con);
 
         // Generate or sanitize slug
         if (empty($slug)) {
@@ -170,10 +240,11 @@ try {
                 seo_title = ?, 
                 meta_description = ?, 
                 meta_keywords = ?, 
+                schema_markup = ?, 
                 sections = ? 
                 WHERE id = ?");
             $stmt->bind_param(
-                "sssiissssi",
+                "sssiisssssi",
                 $page_title,
                 $slug,
                 $page_type,
@@ -182,6 +253,7 @@ try {
                 $seo_title,
                 $meta_description,
                 $meta_keywords,
+                $schema_markup,
                 $sectionsJson,
                 $id
             );
@@ -206,10 +278,11 @@ try {
                 seo_title, 
                 meta_description, 
                 meta_keywords, 
+                schema_markup, 
                 sections
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->bind_param(
-                "ssssiissss",
+                "ssssiisssss",
                 $page_title,
                 $nameVal,
                 $slug,
@@ -219,6 +292,7 @@ try {
                 $seo_title,
                 $meta_description,
                 $meta_keywords,
+                $schema_markup,
                 $sectionsJson
             );
             $stmt->execute();

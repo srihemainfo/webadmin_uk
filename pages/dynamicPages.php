@@ -129,19 +129,22 @@ $pageTitle = "Dynamic Pages";
     }
 
     /* Drag & Drop Handles and Animation */
-    .drag-handle, .nested-drag-handle {
+    .drag-handle,
+    .nested-drag-handle {
         cursor: grab !important;
         color: #94a3b8;
         transition: all 0.15s ease;
         user-select: none;
     }
 
-    .drag-handle:hover, .nested-drag-handle:hover {
+    .drag-handle:hover,
+    .nested-drag-handle:hover {
         color: #0d6efd !important;
         transform: scale(1.15);
     }
 
-    .drag-handle:active, .nested-drag-handle:active {
+    .drag-handle:active,
+    .nested-drag-handle:active {
         cursor: grabbing !important;
     }
 
@@ -187,16 +190,50 @@ $pageTitle = "Dynamic Pages";
         gap: 5px;
     }
 
-    .sec-badge-hero { background: #e0f2fe; color: #0284c7; }
-    .sec-badge-overview { background: #dcfce7; color: #16a34a; }
-    .sec-badge-fleet_pricing { background: #fef3c7; color: #d97706; }
-    .sec-badge-places_showcase { background: #ccfbf1; color: #0d9488; }
-    .sec-badge-why_choose { background: #e0e7ff; color: #4f46e5; }
-    .sec-badge-booking_steps { background: #f1f5f9; color: #475569; }
-    .sec-badge-faqs { background: #fee2e2; color: #dc2626; }
-    .sec-badge-cta { background: #f3e8ff; color: #7e22ce; }
-    .sec-badge-custom_content { background: #f1f5f9; color: #0f172a; }
+    .sec-badge-hero {
+        background: #e0f2fe;
+        color: #0284c7;
+    }
 
+    .sec-badge-overview {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+
+    .sec-badge-fleet_pricing {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .sec-badge-places_showcase {
+        background: #ccfbf1;
+        color: #0d9488;
+    }
+
+    .sec-badge-why_choose {
+        background: #e0e7ff;
+        color: #4f46e5;
+    }
+
+    .sec-badge-booking_steps {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .sec-badge-faqs {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .sec-badge-cta {
+        background: #f3e8ff;
+        color: #7e22ce;
+    }
+
+    .sec-badge-custom_content {
+        background: #f1f5f9;
+        color: #0f172a;
+    }
 </style>
 
 <script>
@@ -306,25 +343,31 @@ $pageTitle = "Dynamic Pages";
 
                     <!-- STICKY TOP HEADER & TABS (Fixed/sticky on scroll) -->
                     <div class="sticky-editor-header bg-white border-bottom shadow-sm">
-                        <div class="py-3 px-4 d-flex flex-wrap align-items-center justify-content-between gap-2 border-bottom">
+                        <div
+                            class="py-3 px-4 d-flex flex-wrap align-items-center justify-content-between gap-2 border-bottom">
                             <div class="d-flex align-items-center gap-3">
-                                <button type="button" class="btn btn-outline-secondary btn-sm px-3 shadow-none" id="btnBackToList">
+                                <button type="button" class="btn btn-outline-secondary btn-sm px-3 shadow-none"
+                                    id="btnBackToList">
                                     <i class="fa fa-arrow-left me-1"></i> Back to List
                                 </button>
-                                <h5 class="mb-0 fw-bold text-dark text-truncate" style="max-width: 480px;" id="editorTitle">Create Dynamic Landing Page</h5>
+                                <h5 class="mb-0 fw-bold text-dark text-truncate" style="max-width: 480px;"
+                                    id="editorTitle">Create Dynamic Landing Page</h5>
                             </div>
                             <div class="d-flex align-items-center gap-2">
-                                <button type="button" class="btn btn-outline-info btn-sm px-3 fw-semibold" id="btnLoadTemplate">
+                                <button type="button" class="btn btn-outline-info btn-sm px-3 fw-semibold"
+                                    id="btnLoadTemplate">
                                     <i class="fa fa-magic me-1"></i> Load Car Rental Template
                                 </button>
-                                <button type="button" class="btn btn-success px-4 fw-semibold shadow-sm" id="btnSavePage">
+                                <button type="button" class="btn btn-success px-4 fw-semibold shadow-sm"
+                                    id="btnSavePage">
                                     <i class="fa fa-save me-1"></i> <span id="btnSaveText">Save Page</span>
                                 </button>
                             </div>
                         </div>
 
                         <!-- TABS & QUICK CONTROLS -->
-                        <div class="px-4 py-2 bg-white d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div
+                            class="px-4 py-2 bg-white d-flex align-items-center justify-content-between flex-wrap gap-2">
                             <ul class="nav nav-pills" id="editorTab" role="tablist">
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link active fw-semibold" id="tab-general" data-bs-toggle="pill"
@@ -341,16 +384,20 @@ $pageTitle = "Dynamic Pages";
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link fw-semibold" id="tab-sections" data-bs-toggle="pill"
                                         data-bs-target="#pills-sections" type="button" role="tab">
-                                        <i class="fa fa-cubes me-1"></i> 3. Modular Sections (<span id="sectionCountBadge">0</span>)
+                                        <i class="fa fa-cubes me-1"></i> 3. Modular Sections (<span
+                                            id="sectionCountBadge">0</span>)
                                     </button>
                                 </li>
                             </ul>
 
                             <div class="d-flex align-items-center gap-2" id="quickSectionControls">
-                                <button type="button" class="btn btn-sm btn-light border px-2 text-secondary" onclick="toggleAllSections(false)" title="Collapse all sections for easy drag & drop">
+                                <button type="button" class="btn btn-sm btn-light border px-2 text-secondary"
+                                    onclick="toggleAllSections(false)"
+                                    title="Collapse all sections for easy drag & drop">
                                     <i class="fa fa-compress me-1"></i> Collapse All
                                 </button>
-                                <button type="button" class="btn btn-sm btn-light border px-2 text-secondary" onclick="toggleAllSections(true)" title="Expand all sections">
+                                <button type="button" class="btn btn-sm btn-light border px-2 text-secondary"
+                                    onclick="toggleAllSections(true)" title="Expand all sections">
                                     <i class="fa fa-expand me-1"></i> Expand All
                                 </button>
                             </div>
@@ -435,6 +482,44 @@ $pageTitle = "Dynamic Pages";
                                             placeholder="e.g. heathrow car rental, taxi sutton, airport transfer london">
                                         <small class="text-muted">Comma separated keywords</small>
                                     </div>
+
+                                    <div class="col-12">
+                                        <div
+                                            class="d-flex justify-content-between align-items-center mb-1 flex-wrap gap-2">
+                                            <label class="form-label fw-bold mb-0">
+                                                <i class="fa fa-code text-primary me-1"></i> Schema Markup / Structured
+                                                Data Scripts (JSON-LD)
+                                            </label>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2"
+                                                    id="btnBeautifySchema" title="Format and indent JSON-LD scripts"
+                                                    style="font-size: 11px;">
+                                                    <i class="fa fa-align-left me-1"></i> Format / Beautify
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2"
+                                                    id="btnValidateSchemaManual" title="Validate all schema scripts"
+                                                    style="font-size: 11px;">
+                                                    <i class="fa fa-check-circle me-1"></i> Check & Validate
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <textarea class="form-control font-monospace" id="schemaMarkup"
+                                            name="schema_markup" rows="8"
+                                            placeholder='Paste one or more <script type="application/ld+json">...</script> tags or raw JSON schema here...'></textarea>
+                                        <div class="d-flex justify-content-between align-items-start mt-1">
+                                            <small class="text-muted" style="font-size: 12px;">
+                                                <strong>Summary Note:</strong> Paste the schema script(s) for this page.
+                                                You can input multiple
+                                                <code>&lt;script type="application/ld+json"&gt;...&lt;/script&gt;</code>
+                                                blocks or direct JSON schemas (e.g. <code>LocalBusiness</code>,
+                                                <code>TaxiService</code>, <code>FAQPage</code>,
+                                                <code>BreadcrumbList</code>, <code>Product</code>). The system
+                                                automatically validates each script block in real time.
+                                            </small>
+                                        </div>
+                                        <!-- Real-time Schema Validation Result Box -->
+                                        <div id="schemaValidationStatus" class="mt-2" style="display: none;"></div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -498,8 +583,7 @@ $pageTitle = "Dynamic Pages";
                                     <!-- Section cards rendered here by JS -->
                                 </div>
 
-                                <div id="noSectionsNotice"
-                                    class="text-center py-5 border border-dashed  bg-light">
+                                <div id="noSectionsNotice" class="text-center py-5 border border-dashed  bg-light">
                                     <i class="fa fa-cubes text-muted fa-3x mb-3"></i>
                                     <h6 class="fw-bold text-dark">No Section Blocks Added Yet</h6>
                                     <p class="text-muted small">Click "Add Section Block" or "Load Car Rental Template"
@@ -507,11 +591,11 @@ $pageTitle = "Dynamic Pages";
                                 </div>
                             </div>
                         </div>
-                    </form>
-                </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <script>
@@ -612,6 +696,38 @@ $pageTitle = "Dynamic Pages";
         // Save Page button
         $('#btnSavePage').on('click', function () {
             saveCurrentPage();
+        });
+
+        // Real-time Schema Markup Validation (with debounce)
+        let schemaValidationTimer = null;
+        $('#schemaMarkup').on('input paste change', function () {
+            clearTimeout(schemaValidationTimer);
+            schemaValidationTimer = setTimeout(function () {
+                renderSchemaValidationFeedback();
+            }, 250);
+        });
+
+        // Beautify / Format Schema button
+        $('#btnBeautifySchema').on('click', function () {
+            beautifySchemaMarkup();
+        });
+
+        // Manual Validate button
+        $('#btnValidateSchemaManual').on('click', function () {
+            let res = renderSchemaValidationFeedback(true);
+            if (res.isValid && !res.isEmpty) {
+                let typesInfo = res.types.length ? '<br>Detected types: <span class="badge bg-success">' + res.types.join('</span> <span class="badge bg-success">') + '</span>' : '';
+                let warnsInfo = res.warnings.length ? '<br><br><small class="text-warning text-start d-block"><strong>Notes:</strong><br>' + res.warnings.map(w => '• ' + escapeHtml(w)).join('<br>') + '</small>' : '';
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Schema is Valid!',
+                    html: 'Successfully validated <strong>' + res.blocksCount + '</strong> schema block(s).' + typesInfo + warnsInfo,
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+            } else if (res.isEmpty) {
+                Swal.fire('Info', 'Schema field is currently empty. You can paste your schema script(s) anytime.', 'info');
+            }
         });
     });
 
@@ -759,6 +875,7 @@ $pageTitle = "Dynamic Pages";
             $('#seoTitle').val(data.seo_title || '');
             $('#metaDescription').val(data.meta_description || '');
             $('#metaKeywords').val(data.meta_keywords || '');
+            $('#schemaMarkup').val(data.schema_markup || '');
 
             if (Array.isArray(data.sections)) {
                 currentSections = data.sections;
@@ -770,10 +887,12 @@ $pageTitle = "Dynamic Pages";
             $('#pageId').val('0');
             $('#pageSlug').val('');
             $('#slugHint').text('car-rental');
+            $('#schemaMarkup').val('');
             $('#isPublished').prop('checked', true);
             $('#isSitemap').prop('checked', true);
         }
 
+        renderSchemaValidationFeedback();
         renderSectionsUI();
 
         // Switch view
@@ -861,7 +980,7 @@ $pageTitle = "Dynamic Pages";
         if (!container || typeof Sortable === 'undefined') return;
 
         if (sectionsSortableInstance) {
-            try { sectionsSortableInstance.destroy(); } catch (e) {}
+            try { sectionsSortableInstance.destroy(); } catch (e) { }
         }
 
         sectionsSortableInstance = new Sortable(container, {
@@ -1551,6 +1670,24 @@ $pageTitle = "Dynamic Pages";
             return;
         }
 
+        // Validate Schema Markup before saving
+        let schemaValidation = validateSchemaMarkup($('#schemaMarkup').val());
+        if (!schemaValidation.isValid) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Schema Script',
+                html: '<p class="mb-2 text-start">The Schema Markup in <strong>2. SEO & Meta Tags</strong> contains syntax errors:</p>' +
+                    '<ul class="text-danger text-start small mb-3">' +
+                    schemaValidation.errors.map(e => '<li>' + escapeHtml(e) + '</li>').join('') +
+                    '</ul>' +
+                    '<p class="small text-muted mb-0">Please fix the schema script before saving.</p>',
+                confirmButtonColor: '#d33'
+            });
+            $('#tab-seo').tab('show');
+            $('#schemaMarkup').focus();
+            return;
+        }
+
         let payload = {
             action: 'save',
             id: $('#pageId').val(),
@@ -1562,6 +1699,7 @@ $pageTitle = "Dynamic Pages";
             seo_title: $('#seoTitle').val().trim(),
             meta_description: $('#metaDescription').val().trim(),
             meta_keywords: $('#metaKeywords').val().trim(),
+            schema_markup: $('#schemaMarkup').val().trim(),
             sections: JSON.stringify(currentSections.map(s => { let c = Object.assign({}, s); delete c._uid; return c; }))
         };
 
@@ -1752,7 +1890,7 @@ $pageTitle = "Dynamic Pages";
         }
     }
 
-    
+
     // Overview Image Preview and Clear helpers
     function updateOverviewImagePreview(secIdx, val) {
         updateSecField(secIdx, 'image', val);
@@ -1813,4 +1951,341 @@ $pageTitle = "Dynamic Pages";
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
     }
+
+    // ==========================================
+    // SCHEMA SCRIPT VALIDATION & FORMATTING
+    // ==========================================
+    function extractSchemaTypes(obj, typesArray) {
+        if (!obj || typeof obj !== 'object') return;
+        if (Array.isArray(obj)) {
+            obj.forEach(item => extractSchemaTypes(item, typesArray));
+            return;
+        }
+        if (obj['@type']) {
+            if (Array.isArray(obj['@type'])) {
+                obj['@type'].forEach(t => typesArray.push(t));
+            } else {
+                typesArray.push(obj['@type']);
+            }
+        }
+        if (obj['@graph'] && Array.isArray(obj['@graph'])) {
+            obj['@graph'].forEach(item => extractSchemaTypes(item, typesArray));
+        }
+    }
+
+    function tryParseConcatenatedJson(str) {
+        let trimmed = str.trim();
+        let items = [];
+        let depth = 0;
+        let inString = false;
+        let escape = false;
+        let startIdx = -1;
+
+        for (let i = 0; i < trimmed.length; i++) {
+            let ch = trimmed[i];
+            if (escape) {
+                escape = false;
+                continue;
+            }
+            if (ch === '\\' && inString) {
+                escape = true;
+                continue;
+            }
+            if (ch === '"') {
+                inString = !inString;
+                continue;
+            }
+            if (!inString) {
+                if (ch === '{') {
+                    if (depth === 0) startIdx = i;
+                    depth++;
+                } else if (ch === '}') {
+                    depth--;
+                    if (depth === 0 && startIdx !== -1) {
+                        let jsonSlice = trimmed.substring(startIdx, i + 1);
+                        try {
+                            let parsed = JSON.parse(jsonSlice);
+                            items.push(parsed);
+                        } catch (e) {
+                            return { success: false, items: [] };
+                        }
+                        startIdx = -1;
+                    }
+                }
+            }
+        }
+
+        if (depth === 0 && items.length > 0) {
+            return { success: true, items: items };
+        }
+        return { success: false, items: [] };
+    }
+
+    function getJsonErrorLocationSnippet(str, errMsg) {
+        try {
+            let posMatch = errMsg.match(/position\s+(\d+)/i);
+            if (posMatch) {
+                let pos = parseInt(posMatch[1], 10);
+                let start = Math.max(0, pos - 20);
+                let end = Math.min(str.length, pos + 20);
+                let snippet = str.substring(start, end).replace(/\s+/g, ' ');
+                return 'near "...' + snippet + '..."';
+            }
+            let lineMatch = errMsg.match(/line\s+(\d+)/i);
+            if (lineMatch) {
+                return 'around line ' + lineMatch[1];
+            }
+        } catch (e) { }
+        return '';
+    }
+
+    function validateSchemaMarkup(rawInput) {
+        let input = (rawInput || '').trim();
+        if (!input) {
+            return {
+                isValid: true,
+                isEmpty: true,
+                blocksCount: 0,
+                types: [],
+                errors: [],
+                warnings: []
+            };
+        }
+
+        let scriptTagRegex = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
+        let matches = [];
+        let match;
+
+        while ((match = scriptTagRegex.exec(input)) !== null) {
+            matches.push({
+                attributes: match[1],
+                content: match[2].trim()
+            });
+        }
+
+        let errors = [];
+        let warnings = [];
+        let validBlocks = [];
+        let detectedTypes = [];
+
+        if (input.toLowerCase().includes('<script') || matches.length > 0) {
+            let openCount = (input.match(/<script\b/gi) || []).length;
+            let closeCount = (input.match(/<\/script>/gi) || []).length;
+
+            if (openCount > closeCount) {
+                errors.push('Unclosed <script> tag detected. You have ' + openCount + ' opening <script> tag(s) but only ' + closeCount + ' closing </script>
+tag(s).');
+return {
+isValid: false,
+isEmpty: false,
+blocksCount: matches.length,
+types: [],
+errors: errors,
+warnings: warnings
+};
+}
+
+if (matches.length === 0) {
+errors.push('No valid
+<script>...</script> block could be parsed. Please verify your script tags.');
+return {
+isValid: false,
+isEmpty: false,
+blocksCount: 0,
+types: [],
+errors: errors,
+warnings: warnings
+};
+}
+
+// Check for loose text outside of script tags
+let textWithoutScripts = input.replace(/<!--[\s\S]*?-->/g, '').replace(/<script\b[^>]*> [\s\S] *?<\ /script>/gi,
+                    '').trim();
+                if (textWithoutScripts.length > 0) {
+                    let preview = textWithoutScripts.length > 50 ? textWithoutScripts.substring(0, 50) + '...' : textWithoutScripts;
+                    warnings.push('Detected extra text outside
+                        < script > tags: "' + preview + '".Only < script > tags should be present.');
+            }
+
+                // Validate each script block
+                matches.forEach((item, idx) => {
+                    let blockNum = idx + 1;
+                    let attrs = item.attributes.toLowerCase();
+
+                    if (!attrs.includes('application/ld+json')) {
+                        warnings.push('Script Block #' + blockNum + ' is missing type="application/ld+json".');
+                    }
+
+                    if (!item.content) {
+                        errors.push('Script Block #' + blockNum + ' is empty.');
+                        return;
+                    }
+
+                    // Check for JS comments in JSON
+                    if (/\/\*[\s\S]*?\*\/|\/\/.*/.test(item.content)) {
+                        warnings.push('Script Block #' + blockNum + ' appears to contain JavaScript comments (// or /* */). Standard JSON-LD requires pure JSON.');
+                    }
+
+                    try {
+                        let cleaned = item.content.replace(/^< !--|- ->$/g, '').trim();
+                        let parsed = JSON.parse(cleaned);
+                        validBlocks.push(parsed);
+                        extractSchemaTypes(parsed, detectedTypes);
+                    } catch (jsonErr) {
+                        let errSnippet = getJsonErrorLocationSnippet(item.content, jsonErr.message);
+                        errors.push('Script Block #' + blockNum + ' JSON Syntax Error: ' + jsonErr.message + (errSnippet ? ' (' + errSnippet + ')' : ''));
+                    }
+                });
+
+            } else {
+                // Raw JSON (no <script> tags)
+                let parsedMulti = tryParseConcatenatedJson(input);
+                if (parsedMulti.success) {
+                    parsedMulti.items.forEach(item => {
+                        validBlocks.push(item);
+                        extractSchemaTypes(item, detectedTypes);
+                    });
+                    warnings.push('Raw JSON provided without <script type="application/ld+json"> tag. You can click "Format / Beautify" to wrap them automatically.');
+                } else {
+                    try {
+                        let parsed = JSON.parse(input);
+                        validBlocks.push(parsed);
+                        extractSchemaTypes(parsed, detectedTypes);
+                        warnings.push('Raw JSON provided without <script type="application/ld+json"> tag. You can click "Format / Beautify" to wrap them automatically.');
+                    } catch (jsonErr) {
+                        let errSnippet = getJsonErrorLocationSnippet(input, jsonErr.message);
+                        errors.push('JSON Syntax Error: ' + jsonErr.message + (errSnippet ? ' (' + errSnippet + ')' : ''));
+                    }
+                }
+            }
+
+            return {
+                isValid: errors.length === 0,
+                isEmpty: false,
+                blocksCount: validBlocks.length,
+                types: [...new Set(detectedTypes)],
+                errors: errors,
+                warnings: warnings
+            };
+        }
+
+        function renderSchemaValidationFeedback(isManual = false) {
+            let raw = $('#schemaMarkup').val();
+            let res = validateSchemaMarkup(raw);
+            let $status = $('#schemaValidationStatus');
+
+            if (res.isEmpty) {
+                $status.hide().html('');
+                return res;
+            }
+
+            $status.show();
+
+            if (!res.isValid) {
+                let errHtml = '<div class="alert alert-danger py-2 px-3 mb-0 border-0 shadow-sm" style="font-size: 12.5px; background: #fef2f2; color: #991b1b; border-left: 4px solid #ef4444 !important;">' +
+                    '<div class="fw-bold mb-1 d-flex align-items-center gap-1">' +
+                    '<i class="fa fa-times-circle text-danger"></i> Invalid Schema Script (' + res.errors.length + ' error' + (res.errors.length > 1 ? 's' : '') + ')' +
+                    '</div>' +
+                    '<ul class="mb-0 ps-3">' +
+                    res.errors.map(e => '<li>' + escapeHtml(e) + '</li>').join('') +
+                    '</ul>' +
+                    '</div>';
+                $status.html(errHtml);
+            } else {
+                let typesBadges = res.types.map(t => '<span class="badge bg-success bg-opacity-75 me-1">' + escapeHtml(t) + '</span>').join('');
+                let warnHtml = '';
+                if (res.warnings.length > 0) {
+                    warnHtml = '<div class="mt-1 small text-muted fst-italic ps-1">' +
+                        res.warnings.map(w => '<div><i class="fa fa-info-circle text-warning me-1"></i>' + escapeHtml(w) + '</div>').join('') +
+                        '</div>';
+                }
+
+                let successHtml = '<div class="alert alert-success py-2 px-3 mb-0 border-0 shadow-sm" style="font-size: 12.5px; background: #ecfdf5; color: #065f46; border-left: 4px solid #10b981 !important;">' +
+                    '<div class="d-flex align-items-center justify-content-between flex-wrap gap-2">' +
+                    '<div>' +
+                    '<i class="fa fa-check-circle text-success me-1"></i> ' +
+                    '<strong>Valid Schema Markup!</strong> ' +
+                    'Found <strong>' + res.blocksCount + '</strong> valid script block' + (res.blocksCount > 1 ? 's' : '') +
+                    (typesBadges ? ': ' + typesBadges : '') +
+                    '</div>' +
+                    '<span class="badge bg-success text-white px-2 py-1"><i class="fa fa-check me-1"></i> Ready to Save</span>' +
+                    '</div>' +
+                    warnHtml +
+                    '</div>';
+                $status.html(successHtml);
+            }
+
+            return res;
+        }
+
+        function beautifySchemaMarkup() {
+            let raw = $('#schemaMarkup').val().trim();
+            if (!raw) {
+                Swal.fire('Info', 'Nothing to beautify. Please enter a schema script first.', 'info');
+                return;
+            }
+
+            let validation = validateSchemaMarkup(raw);
+            if (!validation.isValid) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Cannot Format Invalid Schema',
+                    html: 'Please resolve syntax errors before formatting:<br><br><span class="text-danger small">' +
+                        validation.errors.map(e => '• ' + escapeHtml(e)).join('<br>') + '</span>'
+                });
+                return;
+            }
+
+            try {
+                let formatted = '';
+                let scriptTagRegex = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
+                let matches = [];
+                let match;
+
+                while ((match = scriptTagRegex.exec(raw)) !== null) {
+                    matches.push({
+                        attrs: match[1],
+                        content: match[2].trim()
+                    });
+                }
+
+                if (matches.length > 0) {
+                    let formattedBlocks = [];
+                    matches.forEach(item => {
+                        let cleaned = item.content.replace(/^<!--|-->$/g, '').trim();
+                        let parsed = JSON.parse(cleaned);
+                        let prettyJson = JSON.stringify(parsed, null, 2);
+                        formattedBlocks.push('<script type="application/ld+json">\n' + prettyJson + '\n<\/script>');
+                    });
+                    formatted = formattedBlocks.join('\n\n');
+                } else {
+                    let parsedMulti = tryParseConcatenatedJson(raw);
+                    if (parsedMulti.success) {
+                        let formattedBlocks = [];
+                        parsedMulti.items.forEach(item => {
+                            let prettyJson = JSON.stringify(item, null, 2);
+                            formattedBlocks.push('<script type="application/ld+json">\n' + prettyJson + '\n<\/script>');
+                        });
+                        formatted = formattedBlocks.join('\n\n');
+                    } else {
+                        let parsed = JSON.parse(raw);
+                        let prettyJson = JSON.stringify(parsed, null, 2);
+                        formatted = '<script type="application/ld+json">\n' + prettyJson + '\n<\/script>';
+                    }
+                }
+
+                $('#schemaMarkup').val(formatted);
+                renderSchemaValidationFeedback();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Formatted!',
+                    text: 'Schema script(s) beautified and formatted successfully.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } catch (e) {
+                Swal.fire('Error', 'Failed to format schema: ' + e.message, 'error');
+            }
+        }
 </script>
