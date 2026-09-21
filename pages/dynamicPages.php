@@ -930,6 +930,12 @@ $pageTitle = "Dynamic Pages";
             } else if (typeof data.sections === 'string') {
                 try { currentSections = JSON.parse(data.sections) || []; } catch (e) { currentSections = []; }
             }
+            // Strip deprecated hardcoded unsplash car image from overview sections
+            currentSections.forEach(s => {
+                if (s && s.type === 'overview' && s.image && s.image.indexOf('photo-1549399542-7e3f8b79c341') !== -1) {
+                    s.image = '';
+                }
+            });
         } else {
             $('#editorTitle').text('Create Dynamic Landing Page');
             $('#pageId').val('0');
@@ -1220,6 +1226,9 @@ $pageTitle = "Dynamic Pages";
             </div>
         `;
         } else if (sec.type === 'overview') {
+            if (sec.image && sec.image.indexOf('photo-1549399542-7e3f8b79c341') !== -1) {
+                sec.image = '';
+            }
             html = `
             <div class="row g-2 mb-3">
                 <div class="col-md-6">
@@ -1630,7 +1639,7 @@ $pageTitle = "Dynamic Pages";
             newSec.title = 'Route Overview & Journey Details';
             newSec.subtitle = 'Everything you need to know about traveling from Heathrow Airport to Sutton';
             newSec.description = 'The journey spans roughly 22 miles via the M25 and A217. Enjoy stress-free airport pickup with live flight tracking.';
-            newSec.image = 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=900&q=80';
+            newSec.image = '';
             newSec.items = [
                 { icon: 'fa-road', title: 'Route Distance', desc: 'Approx. 22 miles via M25 & A217' },
                 { icon: 'fa-clock-o', title: 'Estimated Time', desc: '45 - 60 minutes depending on traffic' },
@@ -1807,7 +1816,14 @@ $pageTitle = "Dynamic Pages";
             meta_description: $('#metaDescription').val().trim(),
             meta_keywords: $('#metaKeywords').val().trim(),
             schema_markup: $('#schemaMarkup').val().trim(),
-            sections: JSON.stringify(currentSections.map(s => { let c = Object.assign({}, s); delete c._uid; return c; }))
+            sections: JSON.stringify(currentSections.map(s => {
+                let c = Object.assign({}, s);
+                delete c._uid;
+                if (c.type === 'overview' && c.image && c.image.indexOf('photo-1549399542-7e3f8b79c341') !== -1) {
+                    c.image = '';
+                }
+                return c;
+            }))
         };
 
         $('#btnSavePage').prop('disabled', true);
