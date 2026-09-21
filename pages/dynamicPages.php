@@ -1293,7 +1293,7 @@ $pageTitle = "Dynamic Pages";
             <div class="border p-2 bg-white">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <strong class="small text-dark"><i class="fa fa-car me-1"></i> Vehicle Pricing Cards</strong>
-                    <button type="button" class="btn btn-sm btn-primary px-2 py-1" onclick="addNestedItem(${idx}, 'vehicles', {name:'Saloon Car', price:'£48', passengers:'4', luggage:'2', desc:'Ideal for small groups'})"><i class="fa fa-plus me-1"></i> Add Vehicle</button>
+                    <button type="button" class="btn btn-sm btn-primary px-2 py-1" onclick="addNestedItem(${idx}, 'vehicles', {name:'Standard Saloon', price:'£48', passengers:'4', luggage:'2', desc:'Ideal for solo travellers, couples, and small luggage.'})"><i class="fa fa-plus me-1"></i> Add Vehicle</button>
                 </div>
                 <div class="d-flex flex-column gap-2">
                     ${renderNestedVehicles(sec.vehicles || [], idx)}
@@ -1444,27 +1444,81 @@ $pageTitle = "Dynamic Pages";
     `).join('');
     }
 
+    const standardVehiclesList = [
+        { name: 'Standard Saloon', passengers: '4', luggage: '2', desc: 'Ideal for solo travellers, couples, and small luggage.' },
+        { name: 'Executive Chauffeur (Mercedes E-Class)', passengers: '4', luggage: '2', desc: 'Travel in refined luxury with leather seating and complimentary bottled water.' },
+        { name: 'Estate', passengers: '4', luggage: '4', desc: 'Extra space for family holidays and bulky suitcases.' },
+        { name: 'MPV', passengers: '4', luggage: '8', desc: 'Perfect for large group transfers, teams, and extra sports luggage.' },
+        { name: 'MPV 6', passengers: '4', luggage: '2', desc: 'Ideal for small groups' },
+        { name: 'MPV 6 Luxury', passengers: '6', luggage: '2', desc: 'Ideal for small groups' },
+        { name: 'MPV 7', passengers: '7', luggage: '2', desc: 'Ideal for small groups' },
+        { name: 'MPV 8', passengers: '8', luggage: '2', desc: 'Ideal for small groups' },
+        { name: 'MPV 8 Luxury', passengers: '8', luggage: '2', desc: 'Ideal for small groups' }
+    ];
+
     function renderNestedVehicles(vehicles, secIdx) {
         if (!vehicles || vehicles.length === 0) return '<div class="text-muted small p-2">No vehicle pricing cards added yet.</div>';
-        return vehicles.map((v, itIdx) => `
-        <div class="row g-2 align-items-center border p-2 bg-light mb-1">
+        return vehicles.map((v, itIdx) => {
+            const currentName = (v.name || '').trim();
+            let hasMatch = false;
+            let optionsHtml = standardVehiclesList.map(item => {
+                const isSelected = (currentName.toLowerCase() === item.name.toLowerCase());
+                if (isSelected) hasMatch = true;
+                return `<option value="${escapeHtml(item.name)}" ${isSelected ? 'selected' : ''}>${escapeHtml(item.name)}</option>`;
+            }).join('');
+
+            if (currentName && !hasMatch) {
+                optionsHtml = `<option value="${escapeHtml(currentName)}" selected>${escapeHtml(currentName)}</option>` + optionsHtml;
+            }
+
+            return `
+        <div class="row g-2 align-items-center border p-2 bg-light mb-1 vehicle-row">
             <div class="col-md-3">
-                <input type="text" class="form-control form-control-sm" placeholder="Car Name (e.g. Saloon)" value="${escapeHtml(v.name || '')}" onchange="updateNestedItemField(${secIdx}, 'vehicles', ${itIdx}, 'name', this.value)">
+                <select class="form-select form-select-sm fw-semibold" onchange="onVehicleSelectChange(${secIdx}, ${itIdx}, this)">
+                    <option value="" disabled ${!currentName ? 'selected' : ''}>-- Select Cab Type --</option>
+                    ${optionsHtml}
+                </select>
             </div>
             <div class="col-md-2">
                 <input type="text" class="form-control form-control-sm" placeholder="Price (£48)" value="${escapeHtml(v.price || '')}" onchange="updateNestedItemField(${secIdx}, 'vehicles', ${itIdx}, 'price', this.value)">
             </div>
             <div class="col-md-2">
-                <input type="text" class="form-control form-control-sm" placeholder="Passengers" value="${escapeHtml(v.passengers || '4')}" onchange="updateNestedItemField(${secIdx}, 'vehicles', ${itIdx}, 'passengers', this.value)">
+                <input type="text" class="form-control form-control-sm vehicle-passengers-input" placeholder="Passengers" value="${escapeHtml(v.passengers || '4')}" onchange="updateNestedItemField(${secIdx}, 'vehicles', ${itIdx}, 'passengers', this.value)">
             </div>
             <div class="col-md-4">
-                <input type="text" class="form-control form-control-sm" placeholder="Description" value="${escapeHtml(v.desc || '')}" onchange="updateNestedItemField(${secIdx}, 'vehicles', ${itIdx}, 'desc', this.value)">
+                <input type="text" class="form-control form-control-sm vehicle-desc-input" placeholder="Description" value="${escapeHtml(v.desc || '')}" onchange="updateNestedItemField(${secIdx}, 'vehicles', ${itIdx}, 'desc', this.value)">
             </div>
             <div class="col-md-1 text-end">
-                <button type="button" class="btn btn-sm btn-light border text-danger" onclick="removeNestedItem(${secIdx}, 'vehicles', ${itIdx})"><i class="fa fa-trash"></i></button>
+                <button type="button" class="btn btn-sm btn-light border text-danger" onclick="removeNestedItem(${secIdx}, 'vehicles', ${itIdx})" title="Delete Vehicle"><i class="fa fa-trash"></i></button>
             </div>
         </div>
-    `).join('');
+            `;
+        }).join('');
+    }
+
+    function onVehicleSelectChange(secIdx, itIdx, selectElem) {
+        const selectedVal = selectElem.value;
+        updateNestedItemField(secIdx, 'vehicles', itIdx, 'name', selectedVal);
+
+        const preset = standardVehiclesList.find(p => p.name.toLowerCase() === selectedVal.toLowerCase());
+        if (preset && currentSections[secIdx] && currentSections[secIdx].vehicles && currentSections[secIdx].vehicles[itIdx]) {
+            const v = currentSections[secIdx].vehicles[itIdx];
+            if (!v.passengers || v.passengers === '4' || v.passengers === '') {
+                v.passengers = preset.passengers;
+            }
+            if (!v.luggage || v.luggage === '2' || v.luggage === '') {
+                v.luggage = preset.luggage;
+            }
+            if (!v.desc || v.desc.trim() === '' || v.desc === 'Ideal for small groups' || standardVehiclesList.some(p => p.desc === v.desc)) {
+                v.desc = preset.desc;
+            }
+
+            const row = $(selectElem).closest('.vehicle-row');
+            if (row.length) {
+                row.find('.vehicle-passengers-input').val(v.passengers);
+                row.find('.vehicle-desc-input').val(v.desc);
+            }
+        }
     }
 
 
@@ -1587,9 +1641,14 @@ $pageTitle = "Dynamic Pages";
             newSec.subtitle = 'Select the vehicle tailored to your group size and luggage requirements with no hidden surcharges';
             newSec.vehicles = [
                 { name: 'Standard Saloon', price: '£48', passengers: '4', luggage: '2', desc: 'Ideal for solo travellers, couples, and small luggage.' },
-                { name: 'Executive Chauffeur (Mercedes E-Class)', price: '£65', passengers: '3', luggage: '2', desc: 'Travel in refined luxury with leather seating and complimentary bottled water.' },
-                { name: 'MPV / People Carrier', price: '£58', passengers: '5', luggage: '4', desc: 'Extra space for family holidays and bulky suitcases.' },
-                { name: '8-Seater Minibus', price: '£85', passengers: '8', luggage: '8', desc: 'Perfect for large group transfers, teams, and extra sports luggage.' }
+                { name: 'Executive Chauffeur (Mercedes E-Class)', price: '£65', passengers: '4', luggage: '2', desc: 'Travel in refined luxury with leather seating and complimentary bottled water.' },
+                { name: 'Estate', price: '£55', passengers: '4', luggage: '4', desc: 'Extra space for family holidays and bulky suitcases.' },
+                { name: 'MPV', price: '£58', passengers: '4', luggage: '8', desc: 'Perfect for large group transfers, teams, and extra sports luggage.' },
+                { name: 'MPV 6', price: '£65', passengers: '4', luggage: '2', desc: 'Ideal for small groups' },
+                { name: 'MPV 6 Luxury', price: '£75', passengers: '6', luggage: '2', desc: 'Ideal for small groups' },
+                { name: 'MPV 7', price: '£75', passengers: '7', luggage: '2', desc: 'Ideal for small groups' },
+                { name: 'MPV 8', price: '£85', passengers: '8', luggage: '2', desc: 'Ideal for small groups' },
+                { name: 'MPV 8 Luxury', price: '£95', passengers: '8', luggage: '2', desc: 'Ideal for small groups' }
             ];
         } else if (type === 'why_choose') {
             newSec.title = 'Why Choose GoRide UK for Airport Transfers';
