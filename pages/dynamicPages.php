@@ -505,7 +505,7 @@ $pageTitle = "Dynamic Pages";
                                         </div>
                                         <textarea class="form-control font-monospace" id="schemaMarkup"
                                             name="schema_markup" rows="8"
-                                            placeholder='Paste one or more <script type="application/ld+json">...</script> tags or raw JSON schema here...'></textarea>
+                                            placeholder="Paste one or more &lt;script type=&quot;application/ld+json&quot;&gt;...&lt;/script&gt; tags or raw JSON schema here..."></textarea>
                                         <div class="d-flex justify-content-between align-items-start mt-1">
                                             <small class="text-muted" style="font-size: 12px;">
                                                 <strong>Summary Note:</strong> Paste the schema script(s) for this page.
@@ -2052,7 +2052,7 @@ $pageTitle = "Dynamic Pages";
             };
         }
 
-        let scriptTagRegex = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
+        let scriptTagRegex = new RegExp('<script\\b([^>]*)>([\\s\\S]*?)<\\/script>', 'gi');
         let matches = [];
         let match;
 
@@ -2068,224 +2068,226 @@ $pageTitle = "Dynamic Pages";
         let validBlocks = [];
         let detectedTypes = [];
 
+        let openScriptRegex = new RegExp('<script\\b', 'gi');
+        let closeScriptRegex = new RegExp('<\\/script>', 'gi');
+
         if (input.toLowerCase().includes('<script') || matches.length > 0) {
-            let openCount = (input.match(/<script\b/gi) || []).length;
-            let closeCount = (input.match(/<\/script>/gi) || []).length;
+            let openCount = (input.match(openScriptRegex) || []).length;
+            let closeCount = (input.match(closeScriptRegex) || []).length;
 
             if (openCount > closeCount) {
-                errors.push('Unclosed <script> tag detected. You have ' + openCount + ' opening <script> tag(s) but only ' + closeCount + ' closing </script>
-tag(s).');
-return {
-isValid: false,
-isEmpty: false,
-blocksCount: matches.length,
-types: [],
-errors: errors,
-warnings: warnings
-};
-}
-
-if (matches.length === 0) {
-errors.push('No valid
-<script>...</script> block could be parsed. Please verify your script tags.');
-return {
-isValid: false,
-isEmpty: false,
-blocksCount: 0,
-types: [],
-errors: errors,
-warnings: warnings
-};
-}
-
-// Check for loose text outside of script tags
-let textWithoutScripts = input.replace(/<!--[\s\S]*?-->/g, '').replace(/<script\b[^>]*> [\s\S] *?<\ /script>/gi,
-                    '').trim();
-                if (textWithoutScripts.length > 0) {
-                    let preview = textWithoutScripts.length > 50 ? textWithoutScripts.substring(0, 50) + '...' : textWithoutScripts;
-                    warnings.push('Detected extra text outside
-                        < script > tags: "' + preview + '".Only < script > tags should be present.');
+                errors.push('Unclosed <' + 'script> tag detected. You have ' + openCount + ' opening <' + 'script> tag(s) but only ' + closeCount + ' closing </' + 'script> tag(s).');
+                return {
+                    isValid: false,
+                    isEmpty: false,
+                    blocksCount: matches.length,
+                    types: [],
+                    errors: errors,
+                    warnings: warnings
+                };
             }
 
-                // Validate each script block
-                matches.forEach((item, idx) => {
-                    let blockNum = idx + 1;
-                    let attrs = item.attributes.toLowerCase();
+            if (matches.length === 0) {
+                errors.push('No valid <' + 'script>...</' + 'script> block could be parsed. Please verify your script tags.');
+                return {
+                    isValid: false,
+                    isEmpty: false,
+                    blocksCount: 0,
+                    types: [],
+                    errors: errors,
+                    warnings: warnings
+                };
+            }
 
-                    if (!attrs.includes('application/ld+json')) {
-                        warnings.push('Script Block #' + blockNum + ' is missing type="application/ld+json".');
-                    }
+            // Check for loose text outside of script tags
+            let textWithoutScripts = input.replace(/<!--[\s\S]*?-->/g, '').replace(new RegExp('<script\\b[^>]*>[\\s\\S]*?<\\/script>', 'gi'), '').trim();
+            if (textWithoutScripts.length > 0) {
+                let preview = textWithoutScripts.length > 50 ? textWithoutScripts.substring(0, 50) + '...' : textWithoutScripts;
+                warnings.push('Detected extra text outside <' + 'script> tags: "' + preview + '". Only <' + 'script> tags should be present.');
+            }
 
-                    if (!item.content) {
-                        errors.push('Script Block #' + blockNum + ' is empty.');
-                        return;
-                    }
+            // Validate each script block
+            matches.forEach((item, idx) => {
+                let blockNum = idx + 1;
+                let attrs = item.attributes.toLowerCase();
 
-                    // Check for JS comments in JSON
-                    if (/\/\*[\s\S]*?\*\/|\/\/.*/.test(item.content)) {
-                        warnings.push('Script Block #' + blockNum + ' appears to contain JavaScript comments (// or /* */). Standard JSON-LD requires pure JSON.');
-                    }
+                if (!attrs.includes('application/ld+json')) {
+                    warnings.push('Script Block #' + blockNum + ' is missing type="application/ld+json".');
+                }
 
-                    try {
-                        let cleaned = item.content.replace(/^< !--|- ->$/g, '').trim();
-                        let parsed = JSON.parse(cleaned);
-                        validBlocks.push(parsed);
-                        extractSchemaTypes(parsed, detectedTypes);
-                    } catch (jsonErr) {
-                        let errSnippet = getJsonErrorLocationSnippet(item.content, jsonErr.message);
-                        errors.push('Script Block #' + blockNum + ' JSON Syntax Error: ' + jsonErr.message + (errSnippet ? ' (' + errSnippet + ')' : ''));
-                    }
+                if (!item.content) {
+                    errors.push('Script Block #' + blockNum + ' is empty.');
+                    return;
+                }
+
+                // Check for JS comments in JSON
+                if (/\/\*[\s\S]*?\*\/|\/\/.*/.test(item.content)) {
+                    warnings.push('Script Block #' + blockNum + ' appears to contain JavaScript comments (// or /* */). Standard JSON-LD requires pure JSON.');
+                }
+
+                try {
+                    let cleaned = item.content.replace(/^<!--|-->$/g, '').trim();
+                    let parsed = JSON.parse(cleaned);
+                    validBlocks.push(parsed);
+                    extractSchemaTypes(parsed, detectedTypes);
+                } catch (jsonErr) {
+                    let errSnippet = getJsonErrorLocationSnippet(item.content, jsonErr.message);
+                    errors.push('Script Block #' + blockNum + ' JSON Syntax Error: ' + jsonErr.message + (errSnippet ? ' (' + errSnippet + ')' : ''));
+                }
+            });
+
+        } else {
+            // Raw JSON (no script tags)
+            let parsedMulti = tryParseConcatenatedJson(input);
+            if (parsedMulti.success) {
+                parsedMulti.items.forEach(item => {
+                    validBlocks.push(item);
+                    extractSchemaTypes(item, detectedTypes);
                 });
-
+                warnings.push('Raw JSON provided without <' + 'script type="application/ld+json"> tag. You can click "Format / Beautify" to wrap them automatically.');
             } else {
-                // Raw JSON (no <script> tags)
-                let parsedMulti = tryParseConcatenatedJson(input);
-                if (parsedMulti.success) {
-                    parsedMulti.items.forEach(item => {
-                        validBlocks.push(item);
-                        extractSchemaTypes(item, detectedTypes);
-                    });
-                    warnings.push('Raw JSON provided without <script type="application/ld+json"> tag. You can click "Format / Beautify" to wrap them automatically.');
-                } else {
-                    try {
-                        let parsed = JSON.parse(input);
-                        validBlocks.push(parsed);
-                        extractSchemaTypes(parsed, detectedTypes);
-                        warnings.push('Raw JSON provided without <script type="application/ld+json"> tag. You can click "Format / Beautify" to wrap them automatically.');
-                    } catch (jsonErr) {
-                        let errSnippet = getJsonErrorLocationSnippet(input, jsonErr.message);
-                        errors.push('JSON Syntax Error: ' + jsonErr.message + (errSnippet ? ' (' + errSnippet + ')' : ''));
-                    }
+                try {
+                    let parsed = JSON.parse(input);
+                    validBlocks.push(parsed);
+                    extractSchemaTypes(parsed, detectedTypes);
+                    warnings.push('Raw JSON provided without <' + 'script type="application/ld+json"> tag. You can click "Format / Beautify" to wrap them automatically.');
+                } catch (jsonErr) {
+                    let errSnippet = getJsonErrorLocationSnippet(input, jsonErr.message);
+                    errors.push('JSON Syntax Error: ' + jsonErr.message + (errSnippet ? ' (' + errSnippet + ')' : ''));
                 }
             }
-
-            return {
-                isValid: errors.length === 0,
-                isEmpty: false,
-                blocksCount: validBlocks.length,
-                types: [...new Set(detectedTypes)],
-                errors: errors,
-                warnings: warnings
-            };
         }
 
-        function renderSchemaValidationFeedback(isManual = false) {
-            let raw = $('#schemaMarkup').val();
-            let res = validateSchemaMarkup(raw);
-            let $status = $('#schemaValidationStatus');
+        return {
+            isValid: errors.length === 0,
+            isEmpty: false,
+            blocksCount: validBlocks.length,
+            types: [...new Set(detectedTypes)],
+            errors: errors,
+            warnings: warnings
+        };
+    }
 
-            if (res.isEmpty) {
-                $status.hide().html('');
-                return res;
-            }
+    function renderSchemaValidationFeedback(isManual = false) {
+        let raw = $('#schemaMarkup').val();
+        let res = validateSchemaMarkup(raw);
+        let $status = $('#schemaValidationStatus');
 
-            $status.show();
-
-            if (!res.isValid) {
-                let errHtml = '<div class="alert alert-danger py-2 px-3 mb-0 border-0 shadow-sm" style="font-size: 12.5px; background: #fef2f2; color: #991b1b; border-left: 4px solid #ef4444 !important;">' +
-                    '<div class="fw-bold mb-1 d-flex align-items-center gap-1">' +
-                    '<i class="fa fa-times-circle text-danger"></i> Invalid Schema Script (' + res.errors.length + ' error' + (res.errors.length > 1 ? 's' : '') + ')' +
-                    '</div>' +
-                    '<ul class="mb-0 ps-3">' +
-                    res.errors.map(e => '<li>' + escapeHtml(e) + '</li>').join('') +
-                    '</ul>' +
-                    '</div>';
-                $status.html(errHtml);
-            } else {
-                let typesBadges = res.types.map(t => '<span class="badge bg-success bg-opacity-75 me-1">' + escapeHtml(t) + '</span>').join('');
-                let warnHtml = '';
-                if (res.warnings.length > 0) {
-                    warnHtml = '<div class="mt-1 small text-muted fst-italic ps-1">' +
-                        res.warnings.map(w => '<div><i class="fa fa-info-circle text-warning me-1"></i>' + escapeHtml(w) + '</div>').join('') +
-                        '</div>';
-                }
-
-                let successHtml = '<div class="alert alert-success py-2 px-3 mb-0 border-0 shadow-sm" style="font-size: 12.5px; background: #ecfdf5; color: #065f46; border-left: 4px solid #10b981 !important;">' +
-                    '<div class="d-flex align-items-center justify-content-between flex-wrap gap-2">' +
-                    '<div>' +
-                    '<i class="fa fa-check-circle text-success me-1"></i> ' +
-                    '<strong>Valid Schema Markup!</strong> ' +
-                    'Found <strong>' + res.blocksCount + '</strong> valid script block' + (res.blocksCount > 1 ? 's' : '') +
-                    (typesBadges ? ': ' + typesBadges : '') +
-                    '</div>' +
-                    '<span class="badge bg-success text-white px-2 py-1"><i class="fa fa-check me-1"></i> Ready to Save</span>' +
-                    '</div>' +
-                    warnHtml +
-                    '</div>';
-                $status.html(successHtml);
-            }
-
+        if (res.isEmpty) {
+            $status.hide().html('');
             return res;
         }
 
-        function beautifySchemaMarkup() {
-            let raw = $('#schemaMarkup').val().trim();
-            if (!raw) {
-                Swal.fire('Info', 'Nothing to beautify. Please enter a schema script first.', 'info');
-                return;
+        $status.show();
+
+        if (!res.isValid) {
+            let errHtml = '<div class="alert alert-danger py-2 px-3 mb-0 border-0 shadow-sm" style="font-size: 12.5px; background: #fef2f2; color: #991b1b; border-left: 4px solid #ef4444 !important;">' +
+                '<div class="fw-bold mb-1 d-flex align-items-center gap-1">' +
+                '<i class="fa fa-times-circle text-danger"></i> Invalid Schema Script (' + res.errors.length + ' error' + (res.errors.length > 1 ? 's' : '') + ')' +
+                '</div>' +
+                '<ul class="mb-0 ps-3">' +
+                res.errors.map(e => '<li>' + escapeHtml(e) + '</li>').join('') +
+                '</ul>' +
+                '</div>';
+            $status.html(errHtml);
+        } else {
+            let typesBadges = res.types.map(t => '<span class="badge bg-success bg-opacity-75 me-1">' + escapeHtml(t) + '</span>').join('');
+            let warnHtml = '';
+            if (res.warnings.length > 0) {
+                warnHtml = '<div class="mt-1 small text-muted fst-italic ps-1">' +
+                    res.warnings.map(w => '<div><i class="fa fa-info-circle text-warning me-1"></i>' + escapeHtml(w) + '</div>').join('') +
+                    '</div>';
             }
 
-            let validation = validateSchemaMarkup(raw);
-            if (!validation.isValid) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Cannot Format Invalid Schema',
-                    html: 'Please resolve syntax errors before formatting:<br><br><span class="text-danger small">' +
-                        validation.errors.map(e => '• ' + escapeHtml(e)).join('<br>') + '</span>'
+            let successHtml = '<div class="alert alert-success py-2 px-3 mb-0 border-0 shadow-sm" style="font-size: 12.5px; background: #ecfdf5; color: #065f46; border-left: 4px solid #10b981 !important;">' +
+                '<div class="d-flex align-items-center justify-content-between flex-wrap gap-2">' +
+                '<div>' +
+                '<i class="fa fa-check-circle text-success me-1"></i> ' +
+                '<strong>Valid Schema Markup!</strong> ' +
+                'Found <strong>' + res.blocksCount + '</strong> valid script block' + (res.blocksCount > 1 ? 's' : '') +
+                (typesBadges ? ': ' + typesBadges : '') +
+                '</div>' +
+                '<span class="badge bg-success text-white px-2 py-1"><i class="fa fa-check me-1"></i> Ready to Save</span>' +
+                '</div>' +
+                warnHtml +
+                '</div>';
+            $status.html(successHtml);
+        }
+
+        return res;
+    }
+
+    function beautifySchemaMarkup() {
+        let raw = $('#schemaMarkup').val().trim();
+        if (!raw) {
+            Swal.fire('Info', 'Nothing to beautify. Please enter a schema script first.', 'info');
+            return;
+        }
+
+        let validation = validateSchemaMarkup(raw);
+        if (!validation.isValid) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Cannot Format Invalid Schema',
+                html: 'Please resolve syntax errors before formatting:<br><br><span class="text-danger small">' +
+                    validation.errors.map(e => '• ' + escapeHtml(e)).join('<br>') + '</span>'
+            });
+            return;
+        }
+
+        try {
+            let formatted = '';
+            let scriptTagRegex = new RegExp('<script\\b([^>]*)>([\\s\\S]*?)<\\/script>', 'gi');
+            let matches = [];
+            let match;
+
+            while ((match = scriptTagRegex.exec(raw)) !== null) {
+                matches.push({
+                    attrs: match[1],
+                    content: match[2].trim()
                 });
-                return;
             }
 
-            try {
-                let formatted = '';
-                let scriptTagRegex = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
-                let matches = [];
-                let match;
+            let openTag = '<' + 'script type="application/ld+json">\n';
+            let closeTag = '\n</' + 'script>';
 
-                while ((match = scriptTagRegex.exec(raw)) !== null) {
-                    matches.push({
-                        attrs: match[1],
-                        content: match[2].trim()
-                    });
-                }
-
-                if (matches.length > 0) {
+            if (matches.length > 0) {
+                let formattedBlocks = [];
+                matches.forEach(item => {
+                    let cleaned = item.content.replace(/^<!--|-->$/g, '').trim();
+                    let parsed = JSON.parse(cleaned);
+                    let prettyJson = JSON.stringify(parsed, null, 2);
+                    formattedBlocks.push(openTag + prettyJson + closeTag);
+                });
+                formatted = formattedBlocks.join('\n\n');
+            } else {
+                let parsedMulti = tryParseConcatenatedJson(raw);
+                if (parsedMulti.success) {
                     let formattedBlocks = [];
-                    matches.forEach(item => {
-                        let cleaned = item.content.replace(/^<!--|-->$/g, '').trim();
-                        let parsed = JSON.parse(cleaned);
-                        let prettyJson = JSON.stringify(parsed, null, 2);
-                        formattedBlocks.push('<script type="application/ld+json">\n' + prettyJson + '\n<\/script>');
+                    parsedMulti.items.forEach(item => {
+                        let prettyJson = JSON.stringify(item, null, 2);
+                        formattedBlocks.push(openTag + prettyJson + closeTag);
                     });
                     formatted = formattedBlocks.join('\n\n');
                 } else {
-                    let parsedMulti = tryParseConcatenatedJson(raw);
-                    if (parsedMulti.success) {
-                        let formattedBlocks = [];
-                        parsedMulti.items.forEach(item => {
-                            let prettyJson = JSON.stringify(item, null, 2);
-                            formattedBlocks.push('<script type="application/ld+json">\n' + prettyJson + '\n<\/script>');
-                        });
-                        formatted = formattedBlocks.join('\n\n');
-                    } else {
-                        let parsed = JSON.parse(raw);
-                        let prettyJson = JSON.stringify(parsed, null, 2);
-                        formatted = '<script type="application/ld+json">\n' + prettyJson + '\n<\/script>';
-                    }
+                    let parsed = JSON.parse(raw);
+                    let prettyJson = JSON.stringify(parsed, null, 2);
+                    formatted = openTag + prettyJson + closeTag;
                 }
-
-                $('#schemaMarkup').val(formatted);
-                renderSchemaValidationFeedback();
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Formatted!',
-                    text: 'Schema script(s) beautified and formatted successfully.',
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-            } catch (e) {
-                Swal.fire('Error', 'Failed to format schema: ' + e.message, 'error');
             }
+
+            $('#schemaMarkup').val(formatted);
+            renderSchemaValidationFeedback();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Formatted!',
+                text: 'Schema script(s) beautified and formatted successfully.',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        } catch (e) {
+            Swal.fire('Error', 'Failed to format schema: ' + e.message, 'error');
         }
+    }
 </script>
