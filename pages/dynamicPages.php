@@ -130,31 +130,31 @@ $pageTitle = "Dynamic Pages";
     }
 
     .btn-schema-format {
-        background-color: #ffffff;
-        color: #0891b2;
-        border: 1px solid #06b6d4;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        background-color: #0891b2 !important;
+        color: #ffffff !important;
+        border: 1px solid #0891b2 !important;
+        box-shadow: 0 1px 3px rgba(8, 145, 178, 0.25);
     }
 
     .btn-schema-format:hover {
-        background-color: #06b6d4;
-        color: #ffffff;
-        border-color: #06b6d4;
+        background-color: #0e7490 !important;
+        color: #ffffff !important;
+        border-color: #0e7490 !important;
         transform: translateY(-1px);
-        box-shadow: 0 3px 6px rgba(6, 182, 212, 0.25);
+        box-shadow: 0 3px 8px rgba(8, 145, 178, 0.35);
     }
 
     .btn-schema-validate {
-        background-color: #0d6efd;
-        color: #ffffff;
-        border: 1px solid #0d6efd;
+        background-color: #0d6efd !important;
+        color: #ffffff !important;
+        border: 1px solid #0d6efd !important;
         box-shadow: 0 1px 3px rgba(13, 110, 253, 0.25);
     }
 
     .btn-schema-validate:hover {
-        background-color: #0b5ed7;
-        color: #ffffff;
-        border-color: #0a58ca;
+        background-color: #0b5ed7 !important;
+        color: #ffffff !important;
+        border-color: #0a58ca !important;
         transform: translateY(-1px);
         box-shadow: 0 3px 8px rgba(13, 110, 253, 0.35);
     }
@@ -540,14 +540,14 @@ $pageTitle = "Dynamic Pages";
                                             </label>
                                             <div class="d-flex align-items-center gap-2">
                                                 <button type="button"
-                                                    class="btn btn-sm btn-outline-info fw-semibold px-3 py-1 shadow-sm d-inline-flex align-items-center btn-schema-action btn-schema-format"
+                                                    class="btn btn-sm btn-info fw-semibold px-3 py-1 text-white shadow-sm d-inline-flex align-items-center btn-schema-action btn-schema-format"
                                                     id="btnBeautifySchema" title="Format & Beautify JSON-LD scripts">
-                                                    <i class="fa fa-magic me-1"></i> Format / Beautify
+                                                    <i class="fa-solid fa-wand-magic-sparkles fa fa-magic me-1"></i> Format / Beautify
                                                 </button>
                                                 <button type="button"
                                                     class="btn btn-sm btn-primary fw-semibold px-3 py-1 text-white shadow-sm d-inline-flex align-items-center btn-schema-action btn-schema-validate"
                                                     id="btnValidateSchemaManual" title="Validate all schema scripts">
-                                                    <i class="fa fa-check me-1"></i> Check & Validate
+                                                    <i class="fa-solid fa-check fa fa-check me-1"></i> Check & Validate
                                                 </button>
                                             </div>
                                         </div>
