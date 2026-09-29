@@ -138,35 +138,22 @@ $pageTitle = "Manage Posts";
         <input type="hidden" id="schedule_blog_id">
         <div class="mb-3">
             <label class="form-label">Select Date</label>
-            <input type="date" class="form-control" id="schedule_date" min="<?= date('Y-m-d') ?>">
+            <?php 
+                $uk_tz = new DateTimeZone('Europe/London');
+                $uk_min_date = (new DateTime('now', $uk_tz))->format('Y-m-d');
+            ?>
+            <input type="date" class="form-control" id="schedule_date" min="<?= $uk_min_date ?>">
         </div>
         <div class="mb-3">
             <label class="form-label">Select Time (Hourly base)</label>
             <select class="form-select" id="schedule_time">
-                <option value="00:00:00">12:00 AM</option>
-                <option value="01:00:00">01:00 AM</option>
-                <option value="02:00:00">02:00 AM</option>
-                <option value="03:00:00">03:00 AM</option>
-                <option value="04:00:00">04:00 AM</option>
-                <option value="05:00:00">05:00 AM</option>
-                <option value="06:00:00">06:00 AM</option>
-                <option value="07:00:00">07:00 AM</option>
-                <option value="08:00:00">08:00 AM</option>
-                <option value="09:00:00">09:00 AM</option>
-                <option value="10:00:00">10:00 AM</option>
-                <option value="11:00:00">11:00 AM</option>
-                <option value="12:00:00">12:00 PM (Noon)</option>
-                <option value="13:00:00">01:00 PM</option>
-                <option value="14:00:00">02:00 PM</option>
-                <option value="15:00:00">03:00 PM</option>
-                <option value="16:00:00">04:00 PM</option>
-                <option value="17:00:00">05:00 PM</option>
-                <option value="18:00:00">06:00 PM</option>
-                <option value="19:00:00">07:00 PM</option>
-                <option value="20:00:00">08:00 PM</option>
-                <option value="21:00:00">09:00 PM</option>
-                <option value="22:00:00">10:00 PM</option>
-                <option value="23:00:00">11:00 PM</option>
+                <?php
+                for ($i = 0; $i < 24; $i++) {
+                    $val = sprintf('%02d:00:00', $i);
+                    $label = sprintf('%02d:00', $i);
+                    echo "<option value=\"$val\">$label</option>\n";
+                }
+                ?>
             </select>
         </div>
       </div>
@@ -194,18 +181,24 @@ $('#postSearch').on('keyup', function () {
     }
 });
 
-// Logic to disable past hours for today's date
+function getUKTime() {
+    let ukTimeStr = new Date().toLocaleString("en-US", {timeZone: "Europe/London"});
+    let ukDate = new Date(ukTimeStr);
+    let year = ukDate.getFullYear();
+    let month = String(ukDate.getMonth() + 1).padStart(2, '0');
+    let day = String(ukDate.getDate()).padStart(2, '0');
+    return {
+        dateString: `${year}-${month}-${day}`,
+        hour: ukDate.getHours()
+    };
+}
+
+// Logic to disable past hours for today's date based on UK time
 function updateTimeOptions() {
     let selectedDate = $('#schedule_date').val();
-    let today = new Date();
-    
-    // Format today as YYYY-MM-DD
-    let currentYear = today.getFullYear();
-    let currentMonth = String(today.getMonth() + 1).padStart(2, '0');
-    let currentDay = String(today.getDate()).padStart(2, '0');
-    let todayString = `${currentYear}-${currentMonth}-${currentDay}`;
-    
-    let currentHour = today.getHours();
+    let ukInfo = getUKTime();
+    let todayString = ukInfo.dateString;
+    let currentHour = ukInfo.hour;
 
     $('#schedule_time option').each(function() {
         let optionHour = parseInt($(this).val().split(':')[0], 10);
@@ -327,13 +320,9 @@ function openScheduleModal(id) {
     $('#schedule_blog_id').val(id);
     
     // Set date to today automatically so time constraints immediately apply
-    let today = new Date();
-    let currentYear = today.getFullYear();
-    let currentMonth = String(today.getMonth() + 1).padStart(2, '0');
-    let currentDay = String(today.getDate()).padStart(2, '0');
-    let todayString = `${currentYear}-${currentMonth}-${currentDay}`;
+    let ukInfo = getUKTime();
     
-    $('#schedule_date').val(todayString);
+    $('#schedule_date').val(ukInfo.dateString);
     updateTimeOptions(); // Validate times for current date
 
     $('#scheduleModal').modal('show');
