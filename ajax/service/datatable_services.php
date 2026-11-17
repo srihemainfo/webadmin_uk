@@ -405,10 +405,7 @@ if ($method == "list_agent_customer") {
             $id = $value['id'];
             $deletes = intval($value['deletes'] ?? 0);
 
-            $fullName = trim(($value['name'] ?? '') . ' ' . ($value['lname'] ?? ''));
-            $safeName = htmlspecialchars(addslashes($fullName), ENT_QUOTES, 'UTF-8');
-
-            $action = '<a href="javascript:void(0);" onclick="viewCustomerJobs(' . $id . ', \'' . $safeName . '\')" style="color: #0b8e36; font-weight: bold; margin-left: 10px;"><i class="fa fa-briefcase"></i> VIEW BOOKINGS</a>&nbsp;&nbsp;' .
+            $action = '<a href="javascript:void(0);" onclick="viewCustomerJobs(' . $id . ')" style="color: #0b8e36; font-weight: bold; margin-left: 10px;"><i class="fa fa-briefcase"></i> VIEW BOOKINGS</a>&nbsp;&nbsp;' .
                       '<a href="javascript:void(0);" onclick="openPushModal(\'' . $id . '\')" style="color: #49117cc9; font-weight: bold;"><i class="fa fa-bell"></i> SEND PUSH</a>&nbsp;&nbsp;';
             
             if ($deletes !== 1) {
@@ -621,50 +618,6 @@ else if ($method == 'get_customer_jobs') {
                 } else {
                     $result['regular'][] = $jobData;
                 }
-            }
-            $result['status'] = true;
-        }
-    }
-
-    header('Content-Type: application/json; charset=utf-8');
-    echo json_encode($result, JSON_INVALID_UTF8_SUBSTITUTE);
-    exit;
-}
-elseif ($method == "get_customer_search_logs") {
-    $user_id = isset($_POST['user_id']) ? intval($_POST['user_id']) : 0;
-    $result = ['status' => false, 'data' => []];
-
-    if ($user_id > 0) {
-        $sql = "SELECT id, from_place, to_place, from_city, to_city, meta, created_at 
-                FROM user_activity_log 
-                WHERE user_id = '$user_id' 
-                  AND action IN ('location_search', 'location_search_cached')
-                ORDER BY id DESC 
-                LIMIT 200";
-        $res = mysqli_query($con, $sql);
-
-        if ($res && mysqli_num_rows($res) > 0) {
-            while ($row = mysqli_fetch_assoc($res)) {
-                $from_place = !empty($row['from_place']) ? $row['from_place'] : '';
-                $to_place = !empty($row['to_place']) ? $row['to_place'] : '';
-                
-                // Fallback to meta json if from_place or to_place are empty
-                if ((empty($from_place) || empty($to_place)) && !empty($row['meta'])) {
-                    $meta = json_decode($row['meta'], true);
-                    if (is_array($meta)) {
-                        if (empty($from_place) && !empty($meta['from_name'])) $from_place = $meta['from_name'];
-                        if (empty($to_place) && !empty($meta['to_name'])) $to_place = $meta['to_name'];
-                    }
-                }
-
-                $result['data'][] = [
-                    'id'         => $row['id'],
-                    'from_place' => $from_place ?: '-',
-                    'to_place'   => $to_place ?: '-',
-                    'from_city'  => !empty($row['from_city']) ? $row['from_city'] : '-',
-                    'to_city'    => !empty($row['to_city']) ? $row['to_city'] : '-',
-                    'created_at' => date('d M Y, h:i A', strtotime($row['created_at']))
-                ];
             }
             $result['status'] = true;
         }

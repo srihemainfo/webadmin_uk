@@ -150,19 +150,10 @@
                     userType: userType // Pass to backend
                 }
             },
-            dom: '<"d-flex justify-content-between align-items-center mb-3"<"d-flex align-items-center gap-2"l><"d-flex gap-2"B>>rt<"d-flex justify-content-between align-items-center mt-3"ip>',
+            dom: '<"d-flex justify-content-between align-items-center mb-3"l<"d-flex gap-2"B>>rt<"d-flex justify-content-between align-items-center mt-3"ip>',
             buttons: [
-                {
-                    extend: 'copyHtml5',
-                    text: '<i class="fa fa-copy me-1"></i> Copy',
-                    className: 'btn btn-outline-primary btn-sm fw-semibold'
-                },
-                {
-                    extend: 'excelHtml5',
-                    text: '<i class="fa fa-file-excel me-1"></i> Excel',
-                    className: 'btn btn-outline-success btn-sm fw-semibold',
-                    title: 'Temporary Users Report'
-                }
+                { extend: 'copy', className: 'btn btn-outline-secondary btn-sm fw-bold' },
+                { extend: 'excelHtml5', className: 'btn btn-outline-success btn-sm fw-bold', title: 'Temporary Users Report' }
             ],
             columns: [
                 { 
