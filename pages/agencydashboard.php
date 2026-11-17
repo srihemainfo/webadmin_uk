@@ -2170,9 +2170,12 @@ $today = date('Y-m-d');
                                 </div>
                                 <div class="flex-grow-1" style="min-width: 0;">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <div class="text-truncate" style="font-size: 14px;">
+                                        <div class="text-truncate d-flex align-items-center flex-wrap" style="font-size: 14px;">
                                             <i class="fa fa-user text-primary me-1"></i>
                                             <span class="display-field fw-bold" data-field="name">Venkatesan</span>
+                                            <span class="badge bg-light text-primary border border-primary ms-2 px-2 py-1" id="driver_operator_pill" style="font-size: 11px; font-weight: 600;" title="Assigned Operator">
+                                                <i class="fa fa-building me-1"></i><span id="display_operator_name">-</span>
+                                            </span>
                                         </div>
                                         <div class="d-flex gap-2 flex-shrink-0">
                                             <a href="tel:9876543210" class="call-icon text-decoration-none"
@@ -8104,6 +8107,7 @@ ${(job.status !== 'Completed' && job.app_source !== 'Website Job' && job.app_sou
                 'opacity': '1'
             });
             $('.display-field').text('-');
+            $('#display_operator_name').text('-');
             $('.edit-field').val('');
             $('#main_vehicle_preview, .vehicle-photo').attr('src', NO_IMAGE_SVG);
             $('.driver-photo').attr('src', NO_IMAGE_SVG);
@@ -8178,6 +8182,14 @@ ${(job.status !== 'Completed' && job.app_source !== 'Website Job' && job.app_sou
                     }
                     setText('[data-field="name"]', d.name);
                     setVal('#edit_name', d.name);
+                    let opName = (d.operator_name && d.operator_name.trim() !== '') ? d.operator_name.trim() : '';
+                    if (opName) {
+                        $('#display_operator_name').text(opName);
+                        $('#driver_operator_pill').show().attr('title', 'Operator: ' + opName);
+                    } else {
+                        $('#display_operator_name').text('No Operator');
+                        $('#driver_operator_pill').show().attr('title', 'Independent Driver / No Operator Assigned');
+                    }
                     setText('[data-field="mobile"]', d.mobile);
                     setVal('#edit_mobile', d.mobile);
                     if (d.mobile) {

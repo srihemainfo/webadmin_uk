@@ -3164,11 +3164,20 @@ if ($tabID == 'customer') {
             data: payload,
             dataSrc: tabID === 'customer' ? response => response.result : ""
         },
-        dom: 'Bfrtip',
+        dom: '<"d-flex justify-content-between align-items-center mb-3"<"d-flex align-items-center gap-2"l><"d-flex gap-2"B>>rt<"d-flex justify-content-between align-items-center mt-3"ip>',
         lengthMenu: [[10, 25, 50, 100, 200, 500, -1], [10, 25, 50, 100, 200, 500, 'All']],
         buttons: [
-            'pageLength', 'copy',
-            { extend: 'excelHtml5', title: excelTitle }
+            {
+                extend: 'copyHtml5',
+                text: '<i class="fa fa-copy me-1"></i> Copy',
+                className: 'btn btn-outline-primary btn-sm fw-semibold'
+            },
+            {
+                extend: 'excelHtml5',
+                text: '<i class="fa fa-file-excel me-1"></i> Excel',
+                className: 'btn btn-outline-success btn-sm fw-semibold',
+                title: excelTitle
+            }
         ],
         columns: currentConfig.columns
     });

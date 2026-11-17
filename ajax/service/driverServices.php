@@ -1147,6 +1147,9 @@ else if ($method === "get_driver_details") {
             ur.city,
             ur.dob,
             ur.districts_id,
+            ur.agent_id,
+            TRIM(CONCAT(COALESCE(ag.name, ''), ' ', COALESCE(ag.lname, ''))) as operator_name,
+            ag.mobile as operator_mobile,
             dist.district_name,
             kd.exp,
             kd.dl_no,
@@ -1168,6 +1171,7 @@ else if ($method === "get_driver_details") {
             ocr.back as license_back_image,
             COALESCE(NULLIF(JSON_UNQUOTE(JSON_EXTRACT(ocr.req_response, '$.NT')), ''), JSON_UNQUOTE(JSON_EXTRACT(ocr.req_response, '$.TR'))) as license_type
         FROM user_register as ur
+        LEFT JOIN user_register as ag ON ur.agent_id = ag.id
         LEFT JOIN (
             SELECT exp, dl_no, dl_expiry, selfie_url, front_image, back_image, proof_type, proof_status, user_id 
             FROM kyc_details 

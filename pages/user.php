@@ -2017,72 +2017,121 @@ $addName = 'Users';
 </div>
 <style>
     /* Kill hover color changes for these specific tabs */
-    #jobTabs .nav-link:not(.active):hover {
+    #customerMainTabs .nav-link:not(.active):hover,
+    #jobSubTabs .nav-link:not(.active):hover {
         background-color: transparent !important;
         color: inherit !important;
+    }
+    #customerMainTabs .nav-link.active {
+        background-color: #0d6efd !important;
+        color: #ffffff !important;
+    }
+    #jobSubTabs .nav-link.active {
+        background-color: #e2e8f0 !important;
+        color: #1e293b !important;
     }
 </style>
 
 <div class="modal fade" id="customerJobsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-light">
-                <h5 class="modal-title fw-semibold text-dark">
-                    <i class="fa fa-briefcase text-primary me-2"></i> Customer Jobs Overview
+            <div class="modal-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="modal-title fw-bold text-dark">
+                    <i class="fa fa-user-circle text-primary me-2"></i><span id="customerModalTitle">Customer Overview</span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             
             <div class="modal-body p-4">
                 
+                <!-- TOP-LEVEL TABS: Bookings vs Search Log -->
                 <div class="d-flex justify-content-center mb-4">
-                    <ul class="nav nav-pills p-2 rounded-pill" id="jobTabs" role="tablist" style="background-color: #f1f5f9;">
-                        <li class="nav-item me-3" role="presentation">
-                            <button class="nav-link active rounded-pill px-4 py-2 fw-semibold text-dark shadow-none border-0" id="regular-tab" data-bs-toggle="tab" data-bs-target="#regular-jobs" type="button" role="tab" aria-selected="true" style="font-size: 14px;">
-                                Regular Bookings
+                    <ul class="nav nav-pills p-1 rounded-pill bg-light border shadow-sm" id="customerMainTabs" role="tablist">
+                        <li class="nav-item me-2" role="presentation">
+                            <button class="nav-link active rounded-pill px-4 py-2 fw-semibold text-dark border-0" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#tab-customer-bookings" type="button" role="tab" aria-selected="true" style="font-size: 14px;">
+                                <i class="fa fa-calendar-check me-2 text-primary"></i>Customer's Bookings
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link rounded-pill px-4 py-2 fw-semibold text-dark shadow-none border-0" id="carpool-tab" data-bs-toggle="tab" data-bs-target="#carpool-jobs" type="button" role="tab" aria-selected="false" style="font-size: 14px;">
-                                Car Pools
+                            <button class="nav-link rounded-pill px-4 py-2 fw-semibold text-dark border-0" id="searchlog-tab" data-bs-toggle="tab" data-bs-target="#tab-customer-searchlog" type="button" role="tab" aria-selected="false" style="font-size: 14px;">
+                                <i class="fa fa-history me-2 text-info"></i>Search Log
                             </button>
                         </li>
                     </ul>
                 </div>
 
-                <div class="tab-content" id="jobTabsContent">
-                    <div class="tab-pane fade show active" id="regular-jobs" role="tabpanel" aria-labelledby="regular-tab">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover w-100 align-middle" id="regularJobsTable">
-                                <thead class="table-light">
-                                    <tr style="font-size: 13px; white-space: nowrap;">
-                                        <th>Job No</th>
-                                        <th>Created At</th>
-                                        <th>Pickup Date</th>
-                                        <th class="text-center">Distance (KM)</th>
-                                        <th>From</th>
-                                        <th>To</th>
-                                        <th>Fare</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+                <div class="tab-content" id="customerMainTabsContent">
+                    <!-- TAB 1: CUSTOMER'S BOOKINGS -->
+                    <div class="tab-pane fade show active" id="tab-customer-bookings" role="tabpanel" aria-labelledby="bookings-tab">
+                        <div class="d-flex justify-content-center mb-3">
+                            <ul class="nav nav-pills p-1 rounded-pill" id="jobSubTabs" role="tablist" style="background-color: #f8fafc; font-size: 13px;">
+                                <li class="nav-item me-2" role="presentation">
+                                    <button class="nav-link active rounded-pill px-3 py-1 fw-semibold text-dark border-0" id="regular-tab" data-bs-toggle="tab" data-bs-target="#regular-jobs" type="button" role="tab" aria-selected="true">
+                                        Regular Bookings
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link rounded-pill px-3 py-1 fw-semibold text-dark border-0" id="carpool-tab" data-bs-toggle="tab" data-bs-target="#carpool-jobs" type="button" role="tab" aria-selected="false">
+                                        Car Pools
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="tab-content" id="jobSubTabsContent">
+                            <div class="tab-pane fade show active" id="regular-jobs" role="tabpanel" aria-labelledby="regular-tab">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover w-100 align-middle" id="regularJobsTable">
+                                        <thead class="table-light">
+                                            <tr style="font-size: 13px; white-space: nowrap;">
+                                                <th>Job No</th>
+                                                <th>Created At</th>
+                                                <th>Pickup Date</th>
+                                                <th class="text-center">Distance (KM)</th>
+                                                <th>From</th>
+                                                <th>To</th>
+                                                <th>Fare</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="carpool-jobs" role="tabpanel" aria-labelledby="carpool-tab">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover w-100 align-middle" id="carpoolJobsTable">
+                                        <thead class="table-light">
+                                            <tr style="font-size: 13px; white-space: nowrap;">
+                                                <th>Job No</th>
+                                                <th>Created At</th>
+                                                <th>Departure Date</th>
+                                                <th class="text-center">Distance (KM)</th>
+                                                <th>From</th>
+                                                <th>To</th>
+                                                <th>Fare (Per Seat)</th> 
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="tab-pane fade" id="carpool-jobs" role="tabpanel" aria-labelledby="carpool-tab">
+                    <!-- TAB 2: SEARCH LOG -->
+                    <div class="tab-pane fade" id="tab-customer-searchlog" role="tabpanel" aria-labelledby="searchlog-tab">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover w-100 align-middle" id="carpoolJobsTable">
+                            <table class="table table-bordered table-hover w-100 align-middle" id="customerSearchLogTable">
                                 <thead class="table-light">
                                     <tr style="font-size: 13px; white-space: nowrap;">
-                                        <th>Job No</th>
-                                        <th>Created At</th>
-                                        <th>Departure Date</th>
-                                        <th class="text-center">Distance (KM)</th>
-                                        <th>From</th>
-                                        <th>To</th>
-                                        <th>Fare (Per Seat)</th> 
+                                        <th style="width: 50px;" class="text-center">#</th>
+                                        <th>Search Date & Time</th>
+                                        <th>From Place</th>
+                                        <th>To Place</th>
+                                        <th>From City</th>
+                                        <th>To City</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -2100,22 +2149,31 @@ $addName = 'Users';
     </div>
 </div>
 <script id="rendered-js">
-// Function to fetch and display the user's jobs
-function viewCustomerJobs(userId) {
+// Function to fetch and display the user's jobs and search logs
+function viewCustomerJobs(userId, customerName) {
+    let title = (customerName && customerName.trim() !== '') ? customerName.trim() + "'s Overview" : "Customer Overview";
+    $('#customerModalTitle').text(title);
+
+    // Switch to first tab by default
+    $('#bookings-tab').tab('show');
+    $('#regular-tab').tab('show');
+
     let regTbody = $('#regularJobsTable tbody');
     let poolTbody = $('#carpoolJobsTable tbody');
+    let searchTbody = $('#customerSearchLogTable tbody');
     
-    // Clear out tables and show a loading state
-    regTbody.html('<tr><td colspan="8" class="text-center py-4"><span class="spinner-border spinner-border-sm text-primary"></span> Loading...</td></tr>');
-    // Adjusted colspan to 7 since carpool doesn't have a status column
-    poolTbody.html('<tr><td colspan="7" class="text-center py-4"><span class="spinner-border spinner-border-sm text-primary"></span> Loading...</td></tr>');
+    // Clear out tables and show loading state
+    regTbody.html('<tr><td colspan="8" class="text-center py-4"><span class="spinner-border spinner-border-sm text-primary"></span> Loading regular bookings...</td></tr>');
+    poolTbody.html('<tr><td colspan="7" class="text-center py-4"><span class="spinner-border spinner-border-sm text-primary"></span> Loading car pool jobs...</td></tr>');
+    searchTbody.html('<tr><td colspan="6" class="text-center py-4"><span class="spinner-border spinner-border-sm text-info"></span> Loading search history...</td></tr>');
     
     // Open Modal Instantly
     $('#customerJobsModal').modal('show');
 
+    // 1. Fetch Bookings
     $.ajax({
         type: 'POST',
-        url: url, // Assuming 'url' points to datatable_services.php 
+        url: url,
         data: {
             method: 'get_customer_jobs',
             user_id: userId
@@ -2126,31 +2184,70 @@ function viewCustomerJobs(userId) {
 
             if (response.status) {
                 // Populate Regular Jobs
-                if (response.regular.length > 0) {
+                if (response.regular && response.regular.length > 0) {
                     response.regular.forEach(job => {
-                        regTbody.append(buildJobRow(job, false)); // false = not a carpool job
+                        regTbody.append(buildJobRow(job, false));
                     });
                 } else {
-                    regTbody.append('<tr><td colspan="8" class="text-center text-muted py-3">No regular bookings found.</td></tr>');
+                    regTbody.append('<tr><td colspan="8" class="text-center text-muted py-3">No regular bookings found for this customer.</td></tr>');
                 }
 
                 // Populate Carpool Jobs
-                if (response.carpool.length > 0) {
+                if (response.carpool && response.carpool.length > 0) {
                     response.carpool.forEach(job => {
-                        poolTbody.append(buildJobRow(job, true)); // true = is a carpool job
+                        poolTbody.append(buildJobRow(job, true));
                     });
                 } else {
-                    poolTbody.append('<tr><td colspan="7" class="text-center text-muted py-3">No car pool jobs found.</td></tr>');
+                    poolTbody.append('<tr><td colspan="7" class="text-center text-muted py-3">No car pool jobs found for this customer.</td></tr>');
                 }
             } else {
-                regTbody.append('<tr><td colspan="8" class="text-center text-muted py-3">No jobs found for this customer.</td></tr>');
-                poolTbody.append('<tr><td colspan="7" class="text-center text-muted py-3">No jobs found for this customer.</td></tr>');
+                regTbody.append('<tr><td colspan="8" class="text-center text-muted py-3">No regular bookings found for this customer.</td></tr>');
+                poolTbody.append('<tr><td colspan="7" class="text-center text-muted py-3">No car pool jobs found for this customer.</td></tr>');
             }
         },
         error: function() {
-            regTbody.html('<tr><td colspan="8" class="text-center text-danger py-3">Failed to fetch data.</td></tr>');
-            poolTbody.html('<tr><td colspan="7" class="text-center text-danger py-3">Failed to fetch data.</td></tr>');
+            regTbody.html('<tr><td colspan="8" class="text-center text-danger py-3">Failed to fetch bookings.</td></tr>');
+            poolTbody.html('<tr><td colspan="7" class="text-center text-danger py-3">Failed to fetch car pools.</td></tr>');
             toast('error', 'Failed to fetch customer jobs.');
+        }
+    });
+
+    // 2. Fetch Job Search Logs
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+            method: 'get_customer_search_logs',
+            user_id: userId
+        },
+        success: function(response) {
+            searchTbody.empty();
+            if (response.status && response.data && response.data.length > 0) {
+                response.data.forEach((log, idx) => {
+                    let fromCityBadge = log.from_city && log.from_city !== '-' 
+                        ? `<span class="badge bg-primary-subtle text-primary border border-primary px-2 py-1">${log.from_city}</span>` 
+                        : '<span class="text-muted">-</span>';
+                    let toCityBadge = log.to_city && log.to_city !== '-' 
+                        ? `<span class="badge bg-success-subtle text-success border border-success px-2 py-1">${log.to_city}</span>` 
+                        : '<span class="text-muted">-</span>';
+
+                    searchTbody.append(`
+                        <tr style="font-size: 13px;">
+                            <td class="text-center text-muted">${idx + 1}</td>
+                            <td class="fw-semibold text-nowrap">${log.created_at}</td>
+                            <td><div style="max-width: 260px; white-space: normal;">${log.from_place}</div></td>
+                            <td><div style="max-width: 260px; white-space: normal;">${log.to_place}</div></td>
+                            <td>${fromCityBadge}</td>
+                            <td>${toCityBadge}</td>
+                        </tr>
+                    `);
+                });
+            } else {
+                searchTbody.append('<tr><td colspan="6" class="text-center text-muted py-4"><i class="fa fa-info-circle me-1"></i> No job search history logs found for this customer.</td></tr>');
+            }
+        },
+        error: function() {
+            searchTbody.html('<tr><td colspan="6" class="text-center text-danger py-3">Failed to fetch search history logs.</td></tr>');
         }
     });
 }
@@ -2390,18 +2487,23 @@ function getBadgeColor(status) {
                     state_filter: state_filter
                 }
             },
-            dom: 'Bfrtip',
+            dom: '<"d-flex justify-content-between align-items-center mb-3"<"d-flex align-items-center gap-2"l><"d-flex gap-2"B>>rt<"d-flex justify-content-between align-items-center mt-3"ip>',
             lengthMenu: [
                 [10, 25, 50, 100, 200, 500, -1],
                 [10, 25, 50, 100, 200, 500, 'All'],
             ],
             buttons: [
-                'pageLength',
-                'copy',
+                {
+                    extend: 'copyHtml5',
+                    text: '<i class="fa fa-copy me-1"></i> Copy',
+                    className: 'btn btn-outline-primary btn-sm fw-semibold'
+                },
                 {
                     extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel me-1"></i> Excel',
+                    className: 'btn btn-outline-success btn-sm fw-semibold',
                     title: excelTitle
-                },
+                }
             ],
             columns: [{
                     data: null,
